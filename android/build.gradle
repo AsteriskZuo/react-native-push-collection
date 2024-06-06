@@ -2,10 +2,26 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+    maven { url 'https://developer.hihonor.com/repo' }
+    maven { url 'https://developer.huawei.com/repo/' }
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.1"
+    classpath "com.android.tools.build:gradle:7.3.1"
+    classpath("com.facebook.react:react-native-gradle-plugin")
+
+    // fcm config
+    // NOTE: if you are on react-native 0.71 or below, you must not update
+    //       the google-services plugin past version 4.3.15 as it requires gradle >= 7.3.0
+    classpath 'com.google.gms:google-services:4.4.2'
+
+    // honor config
+    // 增加asplugin插件配置，推荐您使用最新版本。
+    classpath 'com.hihonor.mcs:asplugin:2.0.1.300'
+
+    // huawei config
+    // 增加AGC插件配置，请您参见AGC插件依赖关系选择合适的AGC插件版本。
+    classpath 'com.huawei.agconnect:agcp:1.9.1.301'
   }
 }
 
@@ -30,6 +46,14 @@ def getExtOrIntegerDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["PushCollection_" + name]).toInteger()
 }
 
+def properties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+  localPropertiesFile.withInputStream { stream ->
+    properties.load(stream)
+  }
+}
+
 android {
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
@@ -37,6 +61,38 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+
+
+    println "MEIZU_PUSH_APPKEY: ${properties.getProperty("MEIZU_PUSH_APPKEY")}"
+//    println "App ID:" ${project.android.defaultConfig.applicationId}
+
+    // push default value config
+    buildConfigField("String", "MEIZU_PUSH_APPKEY", "\"${properties.getProperty("MEIZU_PUSH_APPKEY")}\"")
+    buildConfigField("String", "MEIZU_PUSH_APPID", "\"${properties.getProperty("MEIZU_PUSH_APPID")}\"")
+    buildConfigField("String", "OPPO_PUSH_APPKEY", "\"${properties.getProperty("OPPO_PUSH_APPKEY")}\"")
+    buildConfigField("String", "OPPO_PUSH_APPSECRET", "\"${properties.getProperty("OPPO_PUSH_APPSECRET")}\"")
+    buildConfigField("String", "VIVO_PUSH_APPID", "\"${properties.getProperty("VIVO_PUSH_APPID")}\"")
+    buildConfigField("String", "VIVO_PUSH_APPKEY", "\"${properties.getProperty("VIVO_PUSH_APPKEY")}\"")
+    buildConfigField("String", "MI_PUSH_APPKEY", "\"${properties.getProperty("MI_PUSH_APPKEY")}\"")
+    buildConfigField("String", "MI_PUSH_APPID", "\"${properties.getProperty("MI_PUSH_APPID")}\"")
+    buildConfigField("String", "FCM_SENDERID", "\"${properties.getProperty("FCM_SENDERID")}\"")
+    buildConfigField("String", "HONOR_PUSH_APPID", "\"${properties.getProperty("HONOR_PUSH_APPID")}\"")
+    buildConfigField("String", "HUAWEI_PUSH_APPID", "\"${properties.getProperty("HUAWEI_PUSH_APPID")}\"")
+
+    // replece placeholder with default value
+    addManifestPlaceholders([
+      MEIZU_PUSH_APPKEY: "${properties.getProperty("MEIZU_PUSH_APPKEY")}",
+      MEIZU_PUSH_APPID: "${properties.getProperty("MEIZU_PUSH_APPID")}",
+      OPPO_PUSH_APPKEY: "${properties.getProperty("OPPO_PUSH_APPKEY")}",
+      OPPO_PUSH_APPSECRET: "${properties.getProperty("OPPO_PUSH_APPSECRET")}",
+      VIVO_PUSH_APPID: "${properties.getProperty("VIVO_PUSH_APPID")}",
+      VIVO_PUSH_APPKEY: "${properties.getProperty("VIVO_PUSH_APPKEY")}",
+      MI_PUSH_APPKEY: "${properties.getProperty("MI_PUSH_APPKEY")}",
+      MI_PUSH_APPID: "${properties.getProperty("MI_PUSH_APPID")}",
+      FCM_SENDERID: "${properties.getProperty("FCM_SENDERID")}",
+      HONOR_PUSH_APPID: "${properties.getProperty("HONOR_PUSH_APPID")}",
+      HUAWEI_PUSH_APPID: "${properties.getProperty("HUAWEI_PUSH_APPID")}",
+    ])
   }
   buildTypes {
     release {
@@ -58,14 +114,41 @@ android {
 repositories {
   mavenCentral()
   google()
+  maven { url 'https://developer.hihonor.com/repo' }
+  maven { url 'https://developer.huawei.com/repo/' }
 }
-
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
+  implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
+
+  // fcm config
+  implementation 'com.google.firebase:firebase-messaging:24.0.0'
+
+  // honor config
+  implementation 'com.hihonor.mcs:push:7.0.61.303'
+
+  // huawei config
+  implementation 'com.huawei.hms:push:6.12.0.300'
+
+  // meizu config
+  implementation 'com.meizu.flyme.internet:push-internal:4.3.0'
+
+  // oppo config
+  implementation(files("libs/oppo_push_3.5.2.aar"))
+  // oppo dependencies
+  implementation 'com.google.code.gson:gson:2.10.1'
+  implementation 'commons-codec:commons-codec:1.16.0'
+  implementation 'androidx.annotation:annotation:1.8.0'
+
+  // vivo config
+  implementation(files("libs/vivo_push_v4.0.4.0_504.aar"))
+
+  // xiaomi config
+  implementation(files("libs/mi_push_6.0.1.aar"))
 }
 
 if (isNewArchitectureEnabled()) {

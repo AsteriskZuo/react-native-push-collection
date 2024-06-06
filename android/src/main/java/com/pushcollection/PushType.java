@@ -2,7 +2,7 @@ package com.pushcollection;
 
 import androidx.annotation.NonNull;
 
-public enum PushDeviceType {
+public enum PushType {
   FCM("fcm"),
 
   HUAWEI("huawei"),
@@ -17,19 +17,14 @@ public enum PushDeviceType {
 
   MEIZU("meizu"),
 
-  OTHERS("others"),
+  OTHERS("unknown"),
   ;
-
 
   private final String name;
 
-  PushDeviceType(String name) {
-    this.name = name;
-  }
+  PushType(String name) { this.name = name; }
 
-  public String getName() {
-    return name;
-  }
+  public String getName() { return name; }
 
   @NonNull
   @Override

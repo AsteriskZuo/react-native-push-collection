@@ -1,4 +1,180 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.pushcollection">
+  xmlns:tools="http://schemas.android.com/tools"
+  package="com.pushcollection">
+
+  <uses-permission android:name="android.permission.INTERNET" />
+
+  <!--honor queries-->
+  <queries>
+    <intent>
+      <action android:name="com.hihonor.push.action.BIND_PUSH_SERVICE" />
+    </intent>
+  </queries>
+
+  <!--huawei permission-->
+  <permission
+    android:name="${applicationId}.permission.PROCESS_PUSH_MSG"
+    android:protectionLevel="signature" />
+
+  <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
+  <uses-permission android:name="${applicationId}.permission.PROCESS_PUSH_MSG" />
+
+  <!--meizu permisson-->
+  <permission
+    android:name="${applicationId}.permission.C2D_MESSAGE"
+    android:protectionLevel="signature" />
+
+  <uses-permission android:name="com.meizu.c2dm.permission.RECEIVE" />
+  <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+
+  <!--oppo permission-->
+  <uses-permission android:name="com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE" />
+  <uses-permission android:name="com.heytap.mcs.permission.RECIEVE_MCS_MESSAGE" />
+
+  <!--xiaomi permission-->
+  <permission
+    android:name="${applicationId}.permission.MIPUSH_RECEIVE"
+    android:protectionLevel="signature" />
+  <uses-permission android:name="${applicationId}.permission.MIPUSH_RECEIVE" />
+
+
+  <application>
+
+    <!--fcm service config-->
+    <service
+      android:name=".listener.FcmListener"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+    <!--fcm version-->
+    <meta-data
+      android:name="sdk_version_fcm"
+      android:value="24.0.0" />
+
+    <!--honor service config-->
+    <service
+      android:name=".listener.HonorListener"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.hihonor.push.action.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+    <!--honor params-->
+    <meta-data
+      android:name="com.hihonor.push.app_id"
+      android:value="${HONOR_PUSH_APPID}" />
+    <!--honor version-->
+    <meta-data
+      android:name="sdk_version_honor"
+      android:value="7.0.61.303" />
+
+    <!--huawei service config-->
+    <service
+      android:name=".listener.HuaweiListener"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+    <!--huawei params-->
+    <meta-data
+      android:name="sdk_version_huawei"
+      android:value="6.12.0.300" />
+
+    <!--meizu service config-->
+    <receiver
+      android:name=".listener.MeizuListener"
+      android:exported="false"
+      tools:ignore="ExportedReceiver">
+      <intent-filter>
+        <!-- Receiving push messages -->
+        <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
+        <!-- Receive register message -->
+        <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK" />
+        <!-- Receive unregister message -->
+        <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK" />
+        <!-- Compatible with low version Flyme3 push service configuration -->
+        <action android:name="com.meizu.c2dm.intent.REGISTRATION" />
+        <action android:name="com.meizu.c2dm.intent.RECEIVE" />
+
+        <category android:name="com.tencent.qcloud.tim.demo.thirdpush" />
+      </intent-filter>
+    </receiver>
+    <!--meizu version-->
+    <meta-data
+      android:name="sdk_version_meizu"
+      android:value="4.3.0" />
+
+    <!--oppo service config-->
+    <service
+      android:name="com.heytap.msp.push.service.CompatibleDataMessageCallbackService"
+      android:exported="false"
+      android:permission="com.coloros.mcs.permission.SEND_MCS_MESSAGE">
+      <intent-filter>
+        <action android:name="com.coloros.mcs.action.RECEIVE_MCS_MESSAGE" />
+      </intent-filter>
+    </service>
+    <!-- Compatible with versions below Q -->
+    <service
+      android:name="com.heytap.msp.push.service.DataMessageCallbackService"
+      android:exported="false"
+      android:permission="com.heytap.mcs.permission.SEND_PUSH_MESSAGE">
+      <intent-filter>
+        <action android:name="com.heytap.mcs.action.RECEIVE_MCS_MESSAGE" />
+        <action android:name="com.heytap.msp.push.RECEIVE_MCS_MESSAGE" />
+      </intent-filter>
+    </service>
+    <!--oppo verison-->
+    <meta-data
+      android:name="sdk_version_oppo"
+      android:value="3.5.2" />
+
+    <!--vivo service config-->
+    <service
+      android:name="com.vivo.push.sdk.service.CommandClientService"
+      android:exported="false"
+      tools:replace="android:exported"
+      android:permission="com.push.permission.UPSTAGESERVICE" />
+    <receiver
+      android:name=".listener.VivoListener"
+      android:exported="false">
+      <intent-filter>
+        <!--Receiving push messages-->
+        <action android:name="com.vivo.pushclient.action.RECEIVE" />
+      </intent-filter>
+    </receiver>
+    <!--vivo params-->
+    <meta-data
+      android:name="com.vivo.push.api_key"
+      android:value="${VIVO_PUSH_APPKEY}" />
+    <meta-data
+      android:name="com.vivo.push.app_id"
+      android:value="${VIVO_PUSH_APPID}" />
+    <!--vivo version-->
+    <meta-data
+      android:name="sdk_version_vivo"
+      android:value="504" />
+
+    <!--xiaomi service config-->
+    <receiver
+      android:name=".listener.XiaomiListener"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.xiaomi.mipush.ERROR" />
+      </intent-filter>
+    </receiver>
+    <!--xiaomi version-->
+    <meta-data
+      android:name="sdk_version_xiaomi"
+      android:value="6.0.1" />
+  </application>
 
 </manifest>

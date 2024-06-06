@@ -1,4 +1,22 @@
 rootProject.name = 'PushCollectionExample'
+
+//pluginManagement {
+//  repositories {
+//    gradlePluginPortal()
+//    google()
+//    mavenCentral()
+//    maven { url 'https://developer.hihonor.com/repo' }
+//  }
+//}
+dependencyResolutionManagement {
+  repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://developer.hihonor.com/repo' }
+    maven { url 'https://developer.huawei.com/repo/' }
+  }
+}
+
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 includeBuild('../node_modules/react-native-gradle-plugin')

@@ -6,6 +6,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "startr": "react-native start --reset-cache",
+    "startr8888": "react-native start --reset-cache --port 8888",
     "pods": "pod-install --quiet"
   },
   "dependencies": {
