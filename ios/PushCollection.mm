@@ -56,30 +56,32 @@ RCT_REMAP_METHOD(init, init
                                          userInfo:@{NSLocalizedDescriptionKey : @"Device type is not supported"}]];
     }
     [[PushClient sharedInstance] setConfig:pushType];
+    [ReturnUtil success:resolve withData:nil];
 }
 
-RCT_REMAP_METHOD(registerPush, registerPush:withResolver
+RCT_REMAP_METHOD(registerPush, registerPush
+                 : (NSDictionary *)params withResolver
                  : (RCTPromiseResolveBlock)resolve withRejecter
                  : (RCTPromiseRejectBlock)reject) {
     [[PushClient sharedInstance] registerPush];
     [ReturnUtil success:resolve withData:nil];
 }
 
-RCT_REMAP_METHOD(unregisterPush, unregisterPush:withResolver
+RCT_REMAP_METHOD(unregisterPush, unregisterPushWithResolver
                  : (RCTPromiseResolveBlock)resolve withRejecter
                  : (RCTPromiseRejectBlock)reject) {
     [[PushClient sharedInstance] unregisterPush];
     [ReturnUtil success:resolve withData:nil];
 }
 
-RCT_REMAP_METHOD(getPushConfig, getPushConfig:withResolver
+RCT_REMAP_METHOD(getPushConfig, getPushConfigWithResolver
                  : (RCTPromiseResolveBlock)resolve withRejecter
                  : (RCTPromiseRejectBlock)reject) {
     NSDictionary *ret = [ToMapUtil toMap:[[PushClient sharedInstance] getPushConfig]];
     [ReturnUtil success:resolve withData:ret];
 }
 
-RCT_REMAP_METHOD(getToken, getToken:withResolver
+RCT_REMAP_METHOD(getToken, getTokenWithResolver
                  : (RCTPromiseResolveBlock)resolve withRejecter
                  : (RCTPromiseRejectBlock)reject) {
     NSString *ret = [[PushClient sharedInstance] getDeviceToken];

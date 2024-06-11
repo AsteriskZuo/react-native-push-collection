@@ -109,13 +109,17 @@ export class ChatPushClient {
    *
    * An initialization operation needs to be performed first.
    *
+   * **Note** Returning the result does not mean that the token can be obtained normally. You need to use the listener `ChatPushListener.onReceivePushToken` to obtain the result. If the listener has received the result, you can obtain the token through `getToken`.
+   *
    */
   public registerPush(): Promise<void> {
-    return PushCollection.registerPush();
+    return PushCollection.registerPush({});
   }
 
   /**
    * Unregister push notification service.
+   *
+   * **Note** After unregisterPush, you will not be able to obtain a token using `getToken`.
    */
   public unregisterPush(): Promise<void> {
     return PushCollection.unregisterPush();

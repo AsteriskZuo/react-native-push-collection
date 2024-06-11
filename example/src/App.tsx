@@ -7,6 +7,7 @@ import {
   getPlatform,
   getDeviceType,
   type PushType,
+  type ChatPushListener,
 } from 'react-native-push-collection';
 
 export default function App() {
@@ -20,7 +21,7 @@ export default function App() {
     const platform = getPlatform();
     let pushType: PushType;
     if (platform === 'ios') {
-      pushType = 'apns';
+      pushType = 'fcm';
     } else {
       pushType = (getDeviceType() ?? 'unknown') as PushType;
     }
@@ -30,17 +31,81 @@ export default function App() {
         platform: getPlatform(),
         pushType: pushType as any,
       })
+      .then(() => {
+        console.log('test:zuoyu:init:addListener');
+        ChatPushClient.getInstance().addListener({
+          onAppBackground: (params) => {
+            console.log('test:zuoyu:onAppBackground:', params);
+          },
+          onClickNotification: (message) => {
+            console.log('test:zuoyu:onClickNotification:', message);
+          },
+          onError: (error) => {
+            console.log('test:zuoyu:onError:', error);
+          },
+          onAppForeground: (params) => {
+            console.log('test:zuoyu:onAppForeground:', params);
+          },
+          onReceivePushMessage: (message) => {
+            console.log('test:zuoyu:onReceivePushMessage:', message);
+          },
+          onReceivePushToken: (token) => {
+            console.log('test:zuoyu:onReceivePushToken:', token);
+          },
+        } as ChatPushListener);
+      })
       .catch((e) => {
         console.warn('test:zuoyu:init:error:', e);
       });
   }, []);
 
-  const onStartRegistration = () => {};
-  const onStopRegistration = () => {};
+  const uninit = React.useCallback(() => {
+    ChatPushClient.getInstance().clearListener();
+  }, []);
+
+  const onStartRegistration = () => {
+    console.log('test:zuoyu:click:onStartRegistration');
+    ChatPushClient.getInstance()
+      .registerPush()
+      .then(() => {
+        ChatPushClient.getInstance()
+          .getToken()
+          .then((token) => {
+            console.log('test:zuoyu:getToken:', token);
+          })
+          .catch((e) => {
+            console.warn('test:zuoyu:getToken:error:', e);
+          });
+      })
+      .catch((e) => {
+        console.warn('test:zuoyu:registerPush:error:', e);
+      });
+  };
+  const onStopRegistration = () => {
+    console.log('test:zuoyu:click:onStopRegistration');
+    ChatPushClient.getInstance()
+      .unregisterPush()
+      .then(() => {
+        ChatPushClient.getInstance()
+          .getToken()
+          .then((token) => {
+            console.log('test:zuoyu:getToken:', token);
+          })
+          .catch((e) => {
+            console.warn('test:zuoyu:getToken:error:', e);
+          });
+      })
+      .catch((e) => {
+        console.warn('test:zuoyu:unregisterPush:error:', e);
+      });
+  };
 
   React.useEffect(() => {
     init();
-  }, [init]);
+    return () => {
+      uninit();
+    };
+  }, [init, uninit]);
 
   return (
     <View style={styles.container}>

@@ -160,7 +160,7 @@ public class PushClient implements PushListener {
   @Override
   public void onError(Error message) {
     HashMap<String, Object> map = new HashMap<>();
-    map.put("message", message);
+    map.put("error", message);
     this.sendEvent(Const.onError, map);
   }
 }

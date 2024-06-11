@@ -1,9 +1,6 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
-#import <FirebaseCore/FIRApp.h>
-#import <FirebaseMessaging/FIRMessaging.h>
-#import <FirebaseCore/FIROptions.h>
 #import <react-native-push-collection/PushClient.h>
 
 @implementation AppDelegate

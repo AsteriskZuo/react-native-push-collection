@@ -64,7 +64,7 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void registerPush(Promise promise) throws Exception {
+  public void registerPush(ReadableMap params, Promise promise) throws Exception {
     PushClient.getInstance().registerPush();
     ReturnUtil.success(promise, null);
   }
