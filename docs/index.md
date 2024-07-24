@@ -20,6 +20,7 @@
         - [xiaomi](#xiaomi)
       - [配置工程](#配置工程-1)
       - [编写代码](#编写代码-1)
+  - [注意事项](#注意事项)
   - [参考资料](#参考资料)
 
 # 详细说明
@@ -77,7 +78,6 @@ ios 平台，用户可以选择使用 apns 或者 fcm 之一。在初始化的�
 
 ![1](./res/fcm-add-file-to-project.png)
 ![1](./res/fcm-add-push-option.png)
-
 
 #### 编写代码
 
@@ -210,6 +210,7 @@ apply plugin: 'com.huawei.agconnect'
 # ...
 MEIZU_PUSH_APPKEY=xxx
 MEIZU_PUSH_APPID=xxx
+OPPO_PUSH_APPID=xxx
 OPPO_PUSH_APPKEY=xxx
 OPPO_PUSH_APPSECRET=xxx
 VIVO_PUSH_APPID=xxx
@@ -226,6 +227,10 @@ HUAWEI_PUSH_APPID=xxx
 #### 编写代码
 
 无
+
+## 注意事项
+
+1. 该 npm 不能和 `@react-native-firebase/messaging` 共同使用。如果需要使用则请不要使用该库。
 
 ## 参考资料
 

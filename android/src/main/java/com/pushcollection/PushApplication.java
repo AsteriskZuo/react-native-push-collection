@@ -10,8 +10,8 @@ public class PushApplication extends Application {
 
   @Override
   public void onCreate() {
-    super.onCreate();
     this.initializeLifecycle();
+    super.onCreate();
   }
 
   private void launchMainActivity() {

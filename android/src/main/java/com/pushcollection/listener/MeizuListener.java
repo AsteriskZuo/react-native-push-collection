@@ -44,7 +44,9 @@ public class MeizuListener extends MzPushMessageReceiver {
   public void onUpdateNotificationBuilder(PushNotificationBuilder pushNotificationBuilder) {}
 
   @Override
-  public void onRegisterStatus(Context context, RegisterStatus registerStatus) {}
+  public void onRegisterStatus(Context context, RegisterStatus registerStatus) {
+    PushClient.getInstance().onReceivePushToken(registerStatus.getPushId());
+  }
 
   @Override
   public void onUnRegisterStatus(Context context, UnRegisterStatus unRegisterStatus) {}

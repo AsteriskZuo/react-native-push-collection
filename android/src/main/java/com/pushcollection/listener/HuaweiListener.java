@@ -17,6 +17,6 @@ public class HuaweiListener extends HmsMessageService {
 
   @Override
   public void onTokenError(Exception e) {
-    PushClient.getInstance().onError(new Error(e.getMessage()));
+    PushClient.getInstance().onError(e);
   }
 }

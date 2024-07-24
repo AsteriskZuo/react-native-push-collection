@@ -23,8 +23,10 @@ public class ReturnUtil {
       promise.resolve(null);
     }
   }
-  public static void fail(Promise promise, String code, String message) { promise.reject(code, message); }
-  public static void fail(Promise promise, Throwable e) { promise.reject(e); }
+  public static void fail(Promise promise, int code, String message) {
+    ReturnUtil.fail(promise, new PushError(PushErrorCode.fromCode(code), message));
+  }
+  public static void fail(Promise promise, Throwable e) { promise.reject(e, convertThrowableToMap(e)); }
   public static void onEvent(DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter, String eventName,
                              Object data) {
     if (data instanceof Map) {
@@ -94,5 +96,15 @@ public class ReturnUtil {
       Log.e("ToJsonUtil", "convertJsonToArray error:" + e);
     }
     return array;
+  }
+
+  private static WritableMap convertThrowableToMap(Throwable throwable) {
+    WritableMap map = Arguments.createMap();
+    if (throwable instanceof PushError) {
+      PushError error = (PushError)throwable;
+      map.putInt("code", error.getCode());
+    }
+    map.putString("message", throwable.getMessage());
+    return map;
   }
 }

@@ -2,6 +2,7 @@ package com.pushcollection;
 
 import android.content.Context;
 import android.util.Log;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.pushcollection.config.FcmPushConfig;
@@ -20,7 +21,6 @@ import com.pushcollection.register.VivoPushRegister;
 import com.pushcollection.register.XiaomiPushRegister;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONObject;
 
 public class PushClient implements PushListener {
   private static final String TAG = "PushClient";
@@ -46,8 +46,8 @@ public class PushClient implements PushListener {
     return this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
   }
 
-  public boolean setConfig(String pushType) {
-    do {
+  public void setConfig(String pushType, Callback callback) {
+    ThreadUtil.mainThreadExecute(() -> {
       if (pushType.contentEquals("huawei")) {
         this.pushConfig = new HuaweiPushConfig(BuildConfig.HUAWEI_PUSH_APPID);
       } else if (pushType.contentEquals("honor")) {
@@ -65,31 +65,39 @@ public class PushClient implements PushListener {
       }
 
       if (this.pushConfig == null) {
-        break;
+        callback.invoke(new PushError(PushErrorCode.NO_SUPPROT_ERROR, "PushType is not supported"));
+        return;
       }
 
-      if (this.pushConfig instanceof FcmPushConfig) {
-        this.pushRegister = new FcmPushRegister(this.getApplicationContext());
-      } else if (this.pushConfig instanceof HuaweiPushConfig) {
-        this.pushRegister = new HuaweiPushRegister(this.getApplicationContext());
-      } else if (this.pushConfig instanceof HonorPushConfig) {
-        this.pushRegister = new HonorPushRegister(this.getApplicationContext());
-      } else if (this.pushConfig instanceof XiaomiPushConfig) {
-        this.pushRegister = new XiaomiPushRegister(this.getApplicationContext());
-      } else if (this.pushConfig instanceof VivoPushConfig) {
-        this.pushRegister = new VivoPushRegister(this.getApplicationContext());
-      } else if (this.pushConfig instanceof MeizuPushConfig) {
-        this.pushRegister = new MeizuPushRegister(this.getApplicationContext());
-      } else if (this.pushConfig instanceof OppoPushConfig) {
-        this.pushRegister = new OppoPushRegister(this.getApplicationContext());
-      }
+      try {
+        if (this.pushConfig instanceof FcmPushConfig) {
+          this.pushRegister = new FcmPushRegister(this.getApplicationContext());
+        } else if (this.pushConfig instanceof HuaweiPushConfig) {
+          this.pushRegister = new HuaweiPushRegister(this.getApplicationContext(), callback);
+          return;
+        } else if (this.pushConfig instanceof HonorPushConfig) {
+          this.pushRegister = new HonorPushRegister(this.getApplicationContext());
+        } else if (this.pushConfig instanceof XiaomiPushConfig) {
+          this.pushRegister = new XiaomiPushRegister(this.getApplicationContext());
+        } else if (this.pushConfig instanceof VivoPushConfig) {
+          this.pushRegister = new VivoPushRegister(this.getApplicationContext(), callback);
+          return;
+        } else if (this.pushConfig instanceof MeizuPushConfig) {
+          this.pushRegister = new MeizuPushRegister(this.getApplicationContext());
+        } else if (this.pushConfig instanceof OppoPushConfig) {
+          this.pushRegister = new OppoPushRegister(this.getApplicationContext(), callback);
+          return;
+        }
 
-      if (this.pushRegister == null) {
-        break;
+        if (this.pushRegister == null) {
+          callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Construct PushRegister failed"));
+          return;
+        }
+        callback.invoke();
+      } catch (PushError e) {
+        callback.invoke(e);
       }
-      return true;
-    } while (false);
-    return false;
+    });
   }
 
   public String getDeviceToken() {
@@ -104,24 +112,45 @@ public class PushClient implements PushListener {
 
   public Context getApplicationContext() { return this.reactContext.getApplicationContext(); }
 
-  public void registerPush() {
+  public void registerPush(Callback callback) {
     if (this.pushRegister != null) {
-      this.pushRegister.register(this.pushConfig);
+      ThreadUtil.mainThreadExecute(() -> {
+        this.pushRegister.register(this.pushConfig, new Callback() {
+          @Override
+          public void invoke(Object... objects) {
+            if (objects.length > 0 && objects[0] instanceof String) {
+              token = (String)objects[0];
+            }
+            callback.invoke(objects);
+          };
+        });
+      });
     }
   }
 
-  public void unregisterPush() {
+  public void unregisterPush(Callback callback) {
     if (this.pushRegister != null) {
-      pushRegister.unregister();
-      this.token = null;
+      ThreadUtil.mainThreadExecute(() -> {
+        pushRegister.unregister(new Callback() {
+          @Override
+          public void invoke(Object... objects) {
+            if (objects.length == 0) {
+              token = null;
+            }
+            callback.invoke(objects);
+          }
+        });
+      });
     }
   }
 
-  public void sendEvent(String methodType, Map<String,Object> params) {
+  public void sendEvent(String methodType, Map<String, Object> params) {
     DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = this.getEventEmitter();
     if (eventEmitter != null) {
-      params.put("type", methodType);
-      ReturnUtil.onEvent(eventEmitter, Const.onNativeNotification, params);
+      ThreadUtil.mainThreadExecute(() -> {
+        params.put("type", methodType);
+        ReturnUtil.onEvent(eventEmitter, Const.onNativeNotification, params);
+      });
     }
   }
 
@@ -158,7 +187,7 @@ public class PushClient implements PushListener {
   }
 
   @Override
-  public void onError(Error message) {
+  public void onError(Throwable message) {
     HashMap<String, Object> map = new HashMap<>();
     map.put("error", message);
     this.sendEvent(Const.onError, map);

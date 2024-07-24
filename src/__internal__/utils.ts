@@ -16,6 +16,7 @@ export function getPlatform(): PlatformType {
 
 function convertToPushType(manufacturer?: string): PushType {
   let ret: PushType = 'unknown';
+  console.log('test:zuoyu:convertToPushType:', manufacturer);
   if (manufacturer) {
     switch (manufacturer) {
       case 'Google':

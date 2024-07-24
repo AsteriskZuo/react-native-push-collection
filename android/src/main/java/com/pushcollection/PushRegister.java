@@ -1,10 +1,9 @@
 package com.pushcollection;
 
-import android.content.Context;
-import com.huawei.hms.common.ApiException;
+import com.facebook.react.bridge.Callback;
 
 public interface PushRegister {
-  void register(PushConfig config);
-  void unregister();
+  void register(PushConfig config, Callback callback);
+  void unregister(Callback callback);
   String getDeviceToken();
 }

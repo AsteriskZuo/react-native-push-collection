@@ -2,13 +2,13 @@ apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 
 // fcm config
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 
 // honor config
-apply plugin: 'com.hihonor.mcs.asplugin'
+//apply plugin: 'com.hihonor.mcs.asplugin'
 
 // huawei config
-apply plugin: 'com.huawei.agconnect'
+//apply plugin: 'com.huawei.agconnect'
 
 import com.android.build.OutputFile
 

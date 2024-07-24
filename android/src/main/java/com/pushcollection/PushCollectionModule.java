@@ -2,6 +2,7 @@ package com.pushcollection;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -43,36 +44,60 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
       String platform = (String)hashParams.getOrDefault("platform", null);
       String pushType = (String)hashParams.getOrDefault("pushType", null);
 
+      if (pushType == null) {
+        ReturnUtil.fail(promise, new PushError(PushErrorCode.PARAM_ERROR, "PushType param is required"));
+        return;
+      }
       if (platform == null) {
-        ReturnUtil.fail(promise, new Error("Platform is required"));
+        ReturnUtil.fail(promise, new PushError(PushErrorCode.PARAM_ERROR, "Platform param is required"));
         return;
       }
       if (!platform.equals("android")) {
-        ReturnUtil.fail(promise, new Error("Platform is not supported"));
+        ReturnUtil.fail(promise, new PushError(PushErrorCode.NO_SUPPROT_ERROR, "Platform is not supported"));
         return;
       }
       Log.i(TAG, "dev:deviceType" + pushType);
-      boolean ret = PushClient.getInstance().setConfig(pushType);
-      if (ret) {
-        ReturnUtil.success(promise, null);
-      } else {
-        ReturnUtil.fail(promise, new Error("Device type is not supported"));
-      }
+
+      PushClient.getInstance().setConfig(pushType, objects -> {
+        if (objects.length > 0 && objects[0] instanceof PushError) {
+          ReturnUtil.fail(promise, (PushError)objects[0]);
+        } else {
+          ReturnUtil.success(promise, null);
+        }
+      });
     } else {
-      ReturnUtil.fail(promise, new Error("Android version is not supported"));
+      ReturnUtil.fail(promise, new PushError(PushErrorCode.NO_SUPPROT_ERROR, "Android version is not supported"));
     }
   }
 
   @ReactMethod
   public void registerPush(ReadableMap params, Promise promise) throws Exception {
-    PushClient.getInstance().registerPush();
-    ReturnUtil.success(promise, null);
+    PushClient.getInstance().registerPush(objects -> {
+      if (objects.length > 0) {
+        if (objects[0] instanceof PushError) {
+          ReturnUtil.fail(promise, (PushError)objects[0]);
+        } else if (objects[0] instanceof String) {
+          ReturnUtil.success(promise, (String)objects[0]);
+        } else if (objects[0] instanceof Throwable) {
+          ReturnUtil.fail(promise, (Throwable)objects[0]);
+        } else {
+          ReturnUtil.success(promise, null);
+        }
+      } else {
+        ReturnUtil.success(promise, null);
+      }
+    });
   }
 
   @ReactMethod
   public void unregisterPush(Promise promise) {
-    PushClient.getInstance().unregisterPush();
-    ReturnUtil.success(promise, null);
+    PushClient.getInstance().unregisterPush(objects -> {
+      if (objects.length > 0 && objects[0] instanceof PushError) {
+        ReturnUtil.fail(promise, (PushError)objects[0]);
+      } else {
+        ReturnUtil.success(promise, null);
+      }
+    });
   }
 
   @ReactMethod

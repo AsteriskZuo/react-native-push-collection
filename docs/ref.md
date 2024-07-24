@@ -20,3 +20,4 @@
 [vivo-api](https://dev.vivo.com.cn/documentCenter/doc/364)
 [xiaomi-aar](https://dev.mi.com/distribute/doc/details?pId=1544)
 [fcm-ios](https://firebase.google.com/docs/ios/setup?hl=zh-cn#objective-c)
+[im-tencent](https://cloud.tencent.com/document/product/269/75428#.E6.AD.A5.E9.AA.A44.EF.BC.9A.E9.85.8D.E7.BD.AE.E5.8E.82.E5.95.86.E6.8E.A8.E9.80.81.E8.A7.84.E5.88.99)
