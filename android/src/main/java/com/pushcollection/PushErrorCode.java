@@ -9,6 +9,7 @@ public enum PushErrorCode {
   INIT_ERROR(4),
   REGISTER_ERROR(5),
   UNREGISTER_ERROR(6),
+  PREPARE_ERROR(7),
   UNKOWN_ERROR(1000),
   ;
   private int code;

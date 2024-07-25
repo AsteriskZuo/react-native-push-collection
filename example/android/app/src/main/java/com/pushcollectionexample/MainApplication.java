@@ -9,6 +9,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
+import com.pushcollection.PushActivityLifecycleCallbacks;
 
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class MainApplication extends Application implements ReactApplication {
 
   @Override
   public void onCreate() {
+    registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {

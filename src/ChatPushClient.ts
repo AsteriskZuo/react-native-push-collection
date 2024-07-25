@@ -68,6 +68,10 @@ export class ChatPushClient {
 
   /**
    * Initialize the ChatPushClient.
+   *
+   * The manufacturer configuration object and registration object will be generated. If the initialization fails, an exception will be thrown.
+   *
+   * **Notes** `init` must be called before calling other APIs.
    */
   public init(option: InitOptions): Promise<void> {
     this._nativeSubs.forEach((sub) => sub.remove());
@@ -105,6 +109,15 @@ export class ChatPushClient {
   }
 
   /**
+   * Enable push and prepare to enable push. Different manufacturers require different settings.
+   *
+   * **Notes** The order in which `registerPush` and `prepare` are called does not matter.
+   */
+  public prepare(): Promise<void> {
+    return PushCollection.prepare({});
+  }
+
+  /**
    * Register push notification service.
    *
    * An initialization operation needs to be performed first.
@@ -127,6 +140,9 @@ export class ChatPushClient {
 
   /**
    * Get the configuration of the push notification service.
+   *
+   * **Notes** Configuration parameters are obtained through the native part and need to be initialized first.
+   *
    * @returns The configuration of the push notification service.
    */
   public getPushConfig(): Promise<PushConfig | undefined> {
@@ -135,6 +151,9 @@ export class ChatPushClient {
 
   /**
    * Get the push token.
+   *
+   * **Notes** Only when the registration is successful or has been successfully registered can you obtain the `token` normally.
+   *
    * @returns The push token.
    */
   public getToken(): Promise<string | undefined> {

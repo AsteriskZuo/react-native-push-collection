@@ -48,6 +48,12 @@
         <action android:name="com.google.firebase.MESSAGING_EVENT" />
       </intent-filter>
     </service>
+    <meta-data
+      android:name="firebase_messaging_auto_init_enabled"
+      android:value="false" />
+    <meta-data
+      android:name="firebase_analytics_collection_enabled"
+      android:value="false" />
     <!--fcm version-->
     <meta-data
       android:name="sdk_version_fcm"
@@ -78,6 +84,9 @@
         <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
       </intent-filter>
     </service>
+    <meta-data
+      android:name="push_kit_auto_init_enabled"
+      android:value="false"/>
     <!--huawei params-->
     <meta-data
       android:name="sdk_version_huawei"
@@ -160,7 +169,7 @@
     <!--xiaomi service config-->
     <receiver
       android:name=".listener.XiaomiListener"
-      android:exported="false">
+      android:exported="true">
       <intent-filter>
         <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
       </intent-filter>

@@ -1,6 +1,5 @@
 package com.pushcollection.register;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import com.facebook.react.bridge.Callback;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -8,19 +7,36 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.pushcollection.PushConfig;
+import com.pushcollection.BasicPushRegister;
+import com.pushcollection.PushClient;
 import com.pushcollection.PushError;
 import com.pushcollection.PushErrorCode;
-import com.pushcollection.PushRegister;
 import java.util.Objects;
 
-public class FcmPushRegister implements PushRegister {
-  private String token;
+public class FcmPushRegister extends BasicPushRegister {
+  public FcmPushRegister(PushClient client, Callback callback) {
+    super(client);
+    if (!FirebaseMessaging.getInstance().isAutoInitEnabled()) {
+      FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+    }
 
-  public FcmPushRegister(Context context) { FirebaseApp.initializeApp(context); }
+    if (FirebaseApp.initializeApp(client.getApplicationContext()) == null) {
+      callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "FCM init is failed."));
+    } else {
+      callback.invoke();
+    }
+  }
 
   @Override
-  public void register(PushConfig config, Callback callback) {
+  public void prepare(Callback callback) {
+    if (!FirebaseMessaging.getInstance().isNotificationDelegationEnabled()) {
+      FirebaseMessaging.getInstance().setNotificationDelegationEnabled(true);
+    }
+    callback.invoke();
+  }
+
+  @Override
+  public void register(Callback callback) {
     FirebaseMessaging.getInstance()
       .getToken()
       .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -31,8 +47,8 @@ public class FcmPushRegister implements PushRegister {
             callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, reason));
             return;
           }
-          token = task.getResult();
-          callback.invoke(token);
+          setDeviceToken(task.getResult());
+          callback.invoke(getDeviceToken());
         }
       })
       .addOnFailureListener(new OnFailureListener() {
@@ -58,14 +74,9 @@ public class FcmPushRegister implements PushRegister {
       .addOnCompleteListener(new OnCompleteListener<Void>() {
         @Override
         public void onComplete(@NonNull Task<Void> task) {
-          token = null;
+          setDeviceToken(null);
           callback.invoke();
         }
       });
-  }
-
-  @Override
-  public String getDeviceToken() {
-    return token;
   }
 }

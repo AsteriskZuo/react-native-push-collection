@@ -1,28 +1,44 @@
 package com.pushcollection.register;
 
-import android.content.Context;
 import com.facebook.react.bridge.Callback;
 import com.hihonor.push.sdk.HonorPushCallback;
 import com.hihonor.push.sdk.HonorPushClient;
-import com.pushcollection.PushConfig;
+import com.pushcollection.BasicPushRegister;
+import com.pushcollection.PushClient;
 import com.pushcollection.PushError;
 import com.pushcollection.PushErrorCode;
-import com.pushcollection.PushRegister;
 
-public class HonorPushRegister implements PushRegister {
+public class HonorPushRegister extends BasicPushRegister {
   boolean isSupport;
-  String token;
-
-  public HonorPushRegister(Context context) throws PushError {
-    this.isSupport = HonorPushClient.getInstance().checkSupportHonorPush(context);
+  public HonorPushRegister(PushClient client, Callback callback) {
+    super(client);
+    isSupport = HonorPushClient.getInstance().checkSupportHonorPush(client.getApplicationContext());
     if (!isSupport) {
-      throw new PushError(PushErrorCode.INIT_ERROR, "Honor init is failed.");
+      callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Honor init is failed."));
+      return;
     }
-    HonorPushClient.getInstance().init(context, true);
+    HonorPushClient.getInstance().init(client.getApplicationContext(), true);
+    callback.invoke();
   }
 
   @Override
-  public void register(PushConfig config, Callback callback) {
+  public void prepare(Callback callback) {
+    HonorPushClient.getInstance().turnOnNotificationCenter(new HonorPushCallback<Void>() {
+      @Override
+      public void onSuccess(Void unused) {
+        callback.invoke();
+      }
+
+      @Override
+      public void onFailure(int i, String s) {
+        callback.invoke(new PushError(PushErrorCode.PREPARE_ERROR, "{"
+                                                                     + "\"code\":" + i + ",\"message\":" + s + "}"));
+      }
+    });
+  }
+
+  @Override
+  public void register(Callback callback) {
     if (!isSupport) {
       callback.invoke(new PushError(PushErrorCode.NO_SUPPROT_ERROR, "Honor Push is not supported"));
       return;
@@ -30,8 +46,8 @@ public class HonorPushRegister implements PushRegister {
     HonorPushClient.getInstance().getPushToken(new HonorPushCallback<String>() {
       @Override
       public void onSuccess(String s) {
-        token = s;
-        callback.invoke(token);
+        setDeviceToken(s);
+        callback.invoke(getDeviceToken());
       }
 
       @Override
@@ -51,7 +67,7 @@ public class HonorPushRegister implements PushRegister {
     HonorPushClient.getInstance().deletePushToken(new HonorPushCallback<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
-        token = null;
+        setDeviceToken(null);
         callback.invoke();
       }
 
@@ -61,10 +77,5 @@ public class HonorPushRegister implements PushRegister {
                                                                         + "\"code\":" + i + ",\"message\":" + s + "}"));
       }
     });
-  }
-
-  @Override
-  public String getDeviceToken() {
-    return token;
   }
 }

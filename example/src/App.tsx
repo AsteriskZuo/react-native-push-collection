@@ -63,19 +63,33 @@ export default function App() {
     ChatPushClient.getInstance().clearListener();
   }, []);
 
+  const onPrepare = () => {
+    console.log('test:zuoyu:click:onPrepare');
+    ChatPushClient.getInstance()
+      .prepare()
+      .then(() => {
+        console.log('test:zuoyu:prepare');
+      })
+      .catch((e) => {
+        console.warn('test:zuoyu:prepare', e);
+      });
+  };
+
   const onStartRegistration = () => {
     console.log('test:zuoyu:click:onStartRegistration');
     ChatPushClient.getInstance()
       .registerPush()
       .then(() => {
-        ChatPushClient.getInstance()
-          .getToken()
-          .then((token) => {
-            console.log('test:zuoyu:getToken:', token);
-          })
-          .catch((e) => {
-            console.warn('test:zuoyu:getToken:error:', e);
-          });
+        setTimeout(() => {
+          ChatPushClient.getInstance()
+            .getToken()
+            .then((token) => {
+              console.log('test:zuoyu:getToken:', token);
+            })
+            .catch((e) => {
+              console.warn('test:zuoyu:getToken:error:', e);
+            });
+        }, 1000);
       })
       .catch((e) => {
         console.warn('test:zuoyu:registerPush:error:', e);
@@ -110,6 +124,9 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Result: {result}</Text>
+      <Pressable style={styles.button} onPress={onPrepare}>
+        <Text>{'prepare operation'}</Text>
+      </Pressable>
       <Pressable style={styles.button} onPress={onStartRegistration}>
         <Text>{'start Registration'}</Text>
       </Pressable>

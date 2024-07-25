@@ -43,10 +43,13 @@ public class PushClient implements PushListener {
   }
 
   private DeviceEventManagerModule.RCTDeviceEventEmitter getEventEmitter() {
-    return this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+    if (this.reactContext != null) {
+      return this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+    }
+    return null;
   }
 
-  public void setConfig(String pushType, Callback callback) {
+  public void init(String pushType, Callback callback) {
     ThreadUtil.mainThreadExecute(() -> {
       if (pushType.contentEquals("huawei")) {
         this.pushConfig = new HuaweiPushConfig(BuildConfig.HUAWEI_PUSH_APPID);
@@ -69,34 +72,32 @@ public class PushClient implements PushListener {
         return;
       }
 
-      try {
-        if (this.pushConfig instanceof FcmPushConfig) {
-          this.pushRegister = new FcmPushRegister(this.getApplicationContext());
-        } else if (this.pushConfig instanceof HuaweiPushConfig) {
-          this.pushRegister = new HuaweiPushRegister(this.getApplicationContext(), callback);
-          return;
-        } else if (this.pushConfig instanceof HonorPushConfig) {
-          this.pushRegister = new HonorPushRegister(this.getApplicationContext());
-        } else if (this.pushConfig instanceof XiaomiPushConfig) {
-          this.pushRegister = new XiaomiPushRegister(this.getApplicationContext());
-        } else if (this.pushConfig instanceof VivoPushConfig) {
-          this.pushRegister = new VivoPushRegister(this.getApplicationContext(), callback);
-          return;
-        } else if (this.pushConfig instanceof MeizuPushConfig) {
-          this.pushRegister = new MeizuPushRegister(this.getApplicationContext());
-        } else if (this.pushConfig instanceof OppoPushConfig) {
-          this.pushRegister = new OppoPushRegister(this.getApplicationContext(), callback);
-          return;
-        }
-
-        if (this.pushRegister == null) {
-          callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Construct PushRegister failed"));
-          return;
-        }
-        callback.invoke();
-      } catch (PushError e) {
-        callback.invoke(e);
+      if (this.pushConfig instanceof FcmPushConfig) {
+        this.pushRegister = new FcmPushRegister(this, callback);
+        return;
+      } else if (this.pushConfig instanceof HuaweiPushConfig) {
+        this.pushRegister = new HuaweiPushRegister(this, callback);
+        return;
+      } else if (this.pushConfig instanceof HonorPushConfig) {
+        this.pushRegister = new HonorPushRegister(this, callback);
+        return;
+      } else if (this.pushConfig instanceof XiaomiPushConfig) {
+        this.pushRegister = new XiaomiPushRegister(this);
+      } else if (this.pushConfig instanceof VivoPushConfig) {
+        this.pushRegister = new VivoPushRegister(this, callback);
+        return;
+      } else if (this.pushConfig instanceof MeizuPushConfig) {
+        this.pushRegister = new MeizuPushRegister(this);
+      } else if (this.pushConfig instanceof OppoPushConfig) {
+        this.pushRegister = new OppoPushRegister(this, callback);
+        return;
       }
+
+      if (this.pushRegister == null) {
+        callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Construct PushRegister failed"));
+        return;
+      }
+      callback.invoke();
     });
   }
 
@@ -115,7 +116,7 @@ public class PushClient implements PushListener {
   public void registerPush(Callback callback) {
     if (this.pushRegister != null) {
       ThreadUtil.mainThreadExecute(() -> {
-        this.pushRegister.register(this.pushConfig, new Callback() {
+        this.pushRegister.register(new Callback() {
           @Override
           public void invoke(Object... objects) {
             if (objects.length > 0 && objects[0] instanceof String) {
@@ -141,6 +142,12 @@ public class PushClient implements PushListener {
           }
         });
       });
+    }
+  }
+
+  public void prepare(Callback callback) {
+    if (this.pushRegister != null) {
+      ThreadUtil.mainThreadExecute(() -> { pushRegister.prepare(callback); });
     }
   }
 

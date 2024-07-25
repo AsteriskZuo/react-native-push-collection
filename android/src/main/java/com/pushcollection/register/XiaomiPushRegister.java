@@ -1,42 +1,59 @@
 package com.pushcollection.register;
 
-import android.content.Context;
 import com.facebook.react.bridge.Callback;
+import com.pushcollection.BasicPushRegister;
 import com.pushcollection.PushClient;
-import com.pushcollection.PushConfig;
-import com.pushcollection.PushRegister;
+import com.pushcollection.PushError;
+import com.pushcollection.PushErrorCode;
 import com.pushcollection.config.XiaomiPushConfig;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
-public class XiaomiPushRegister implements PushRegister {
+public class XiaomiPushRegister extends BasicPushRegister {
   String token;
 
-  public XiaomiPushRegister(Context context) {}
+  public XiaomiPushRegister(PushClient client) { super(client); }
 
   @Override
-  public void register(PushConfig config, Callback callback) {
-    this.token = MiPushClient.getRegId(PushClient.getInstance().getApplicationContext());
-    if (token == null || token.contentEquals("")) {
-      XiaomiPushConfig f = (XiaomiPushConfig)config;
-      MiPushClient.registerPush(PushClient.getInstance().getApplicationContext(), f.appId, f.appKey);
+  public void prepare(Callback callback) {
+    MiPushClient.enablePush(getContext());
+    MiPushClient.turnOnPush(getContext(), new MiPushClient.UPSTurnCallBack() {
+      @Override
+      public void onResult(MiPushClient.CodeResult codeResult) {
+        if (codeResult.getResultCode() == 0) {
+          callback.invoke();
+        } else {
+          callback.invoke(new PushError(PushErrorCode.PREPARE_ERROR, "Mi push prepare is failed."));
+        }
+      }
+    });
+  }
+
+  @Override
+  public void register(Callback callback) {
+    setDeviceToken(MiPushClient.getRegId(getContext()));
+    String t = getDeviceToken();
+    if (t == null || t.contentEquals("")) {
+      XiaomiPushConfig f = (XiaomiPushConfig)getPushConfig();
+      MiPushClient.registerPush(getContext(), f.appId, f.appKey);
       callback.invoke();
     } else {
-      callback.invoke(token);
+      callback.invoke(t);
     }
   }
 
   @Override
   public void unregister(Callback callback) {
-    MiPushClient.unregisterPush(PushClient.getInstance().getApplicationContext());
-    this.token = null;
+    MiPushClient.unregisterPush(getContext());
+    setDeviceToken(null);
     callback.invoke();
   }
 
   @Override
   public String getDeviceToken() {
-    if (token == null || token.contentEquals("")) {
-      this.token = MiPushClient.getRegId(PushClient.getInstance().getApplicationContext());
+    String t = super.getDeviceToken();
+    if (t == null || t.contentEquals("")) {
+      setDeviceToken(MiPushClient.getRegId(getContext()));
     }
-    return token;
+    return super.getDeviceToken();
   }
 }

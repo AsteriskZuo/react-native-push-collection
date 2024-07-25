@@ -58,7 +58,7 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
       }
       Log.i(TAG, "dev:deviceType" + pushType);
 
-      PushClient.getInstance().setConfig(pushType, objects -> {
+      PushClient.getInstance().init(pushType, objects -> {
         if (objects.length > 0 && objects[0] instanceof PushError) {
           ReturnUtil.fail(promise, (PushError)objects[0]);
         } else {
@@ -68,6 +68,20 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
     } else {
       ReturnUtil.fail(promise, new PushError(PushErrorCode.NO_SUPPROT_ERROR, "Android version is not supported"));
     }
+  }
+
+  @ReactMethod
+  public void prepare(ReadableMap params, Promise promise) throws Exception {
+    PushClient.getInstance().prepare(new Callback() {
+      @Override
+      public void invoke(Object... objects) {
+        if (objects.length > 0 && objects[0] instanceof PushError) {
+          ReturnUtil.fail(promise, (PushError)objects[0]);
+        } else {
+          ReturnUtil.success(promise, null);
+        }
+      }
+    });
   }
 
   @ReactMethod
