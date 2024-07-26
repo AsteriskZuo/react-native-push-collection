@@ -243,6 +243,7 @@ registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
 ## 注意事项
 
 1. 该 npm 不能和 `@react-native-firebase/messaging` 共同使用。如果需要使用则请不要使用该库。
+2. 国内用户如果需要使用 `fcm`，可能需要正常访问外网。
 
 ## 参考资料
 

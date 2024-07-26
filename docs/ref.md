@@ -3,7 +3,7 @@
 # 相关资料集合
 
 [xiaomi-android](https://dev.mi.com/console/doc/detail?pId=41)
-[meizu-android](http://open.res.flyme.cn/fileserver/upload/file/201612/728a49f530c64c5a832d7ba1de69e356.pdf)
+[meizu-android](https://open-res.flyme.cn/fileserver/upload/file/202407/4d053b4a33434f20b4639e177130ac78.pdf)
 [oppo-android](https://open.oppomobile.com/new/developmentDoc/info?id=11221)
 [vivo-android](https://dev.vivo.com.cn/documentCenter/doc/158)
 [apns-ios](https://developer.apple.com/documentation/usernotifications/registering-your-app-with-apns)
