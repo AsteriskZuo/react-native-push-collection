@@ -50,7 +50,7 @@ public class PushClient implements PushListener {
   }
 
   public void init(String pushType, Callback callback) {
-    ThreadUtil.mainThreadExecute(() -> {
+    ThreadUtil.asyncExecute(() -> {
       if (pushType.contentEquals("huawei")) {
         this.pushConfig = new HuaweiPushConfig(BuildConfig.HUAWEI_PUSH_APPID);
       } else if (pushType.contentEquals("honor")) {
@@ -115,7 +115,7 @@ public class PushClient implements PushListener {
 
   public void registerPush(Callback callback) {
     if (this.pushRegister != null) {
-      ThreadUtil.mainThreadExecute(() -> {
+      ThreadUtil.asyncExecute(() -> {
         this.pushRegister.register(new Callback() {
           @Override
           public void invoke(Object... objects) {
@@ -131,7 +131,7 @@ public class PushClient implements PushListener {
 
   public void unregisterPush(Callback callback) {
     if (this.pushRegister != null) {
-      ThreadUtil.mainThreadExecute(() -> {
+      ThreadUtil.asyncExecute(() -> {
         pushRegister.unregister(new Callback() {
           @Override
           public void invoke(Object... objects) {
@@ -147,17 +147,15 @@ public class PushClient implements PushListener {
 
   public void prepare(Callback callback) {
     if (this.pushRegister != null) {
-      ThreadUtil.mainThreadExecute(() -> { pushRegister.prepare(callback); });
+      ThreadUtil.asyncExecute(() -> { pushRegister.prepare(callback); });
     }
   }
 
   public void sendEvent(String methodType, Map<String, Object> params) {
     DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = this.getEventEmitter();
     if (eventEmitter != null) {
-      ThreadUtil.mainThreadExecute(() -> {
-        params.put("type", methodType);
-        ReturnUtil.onEvent(eventEmitter, Const.onNativeNotification, params);
-      });
+      params.put("type", methodType);
+      ReturnUtil.onEvent(eventEmitter, Const.onNativeNotification, params);
     }
   }
 

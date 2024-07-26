@@ -39,8 +39,8 @@ public class HuaweiPushRegister extends BasicPushRegister {
   public void register(Callback callback) {
     HuaweiPushConfig pushConfig = (HuaweiPushConfig)getPushConfig();
     try {
-      setDeviceToken(HmsInstanceId.getInstance(PushClient.getInstance().getApplicationContext())
-                       .getToken(pushConfig.appId, HmsMessaging.DEFAULT_TOKEN_SCOPE));
+      setDeviceToken(
+        HmsInstanceId.getInstance(getContext()).getToken(pushConfig.appId, HmsMessaging.DEFAULT_TOKEN_SCOPE));
       callback.invoke(getDeviceToken());
     } catch (ApiException e) {
       callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, e.getMessage()));
@@ -49,9 +49,9 @@ public class HuaweiPushRegister extends BasicPushRegister {
 
   @Override
   public void unregister(Callback callback) {
-    HuaweiPushConfig f = (HuaweiPushConfig)PushClient.getInstance().getPushConfig();
+    HuaweiPushConfig f = (HuaweiPushConfig)getPushConfig();
     try {
-      HmsInstanceId.getInstance(PushClient.getInstance().getApplicationContext()).deleteToken(f.appId);
+      HmsInstanceId.getInstance(getContext()).deleteToken(f.appId);
       setDeviceToken(null);
       callback.invoke();
     } catch (ApiException e) {

@@ -27,5 +27,7 @@ public abstract class BasicPushRegister implements PushRegister {
   protected Context getContext() { return this.client.getApplicationContext(); }
 
   @Override
-  public void prepare(Callback callback) {}
+  public void prepare(Callback callback) {
+    callback.invoke();
+  }
 }

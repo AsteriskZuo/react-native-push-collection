@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable, ToastAndroid } from 'react-native';
 import {
   multiply,
   ChatPushClient,
@@ -36,26 +36,48 @@ export default function App() {
         ChatPushClient.getInstance().addListener({
           onAppBackground: (params) => {
             console.log('test:zuoyu:onAppBackground:', params);
+            ToastAndroid.show(
+              'onAppBackground' + JSON.stringify(params),
+              ToastAndroid.SHORT
+            );
           },
           onClickNotification: (message) => {
             console.log('test:zuoyu:onClickNotification:', message);
+            ToastAndroid.show(
+              'onClickNotification' + JSON.stringify(message),
+              ToastAndroid.SHORT
+            );
           },
           onError: (error) => {
             console.log('test:zuoyu:onError:', error);
+            ToastAndroid.show(
+              'onError' + JSON.stringify(error),
+              ToastAndroid.SHORT
+            );
           },
           onAppForeground: (params) => {
             console.log('test:zuoyu:onAppForeground:', params);
+            ToastAndroid.show(
+              'onAppForeground' + JSON.stringify(params),
+              ToastAndroid.SHORT
+            );
           },
           onReceivePushMessage: (message) => {
             console.log('test:zuoyu:onReceivePushMessage:', message);
+            ToastAndroid.show(
+              'onReceivePushMessage' + JSON.stringify(message),
+              ToastAndroid.SHORT
+            );
           },
           onReceivePushToken: (token) => {
             console.log('test:zuoyu:onReceivePushToken:', token);
+            ToastAndroid.show('onReceivePushToken' + token, ToastAndroid.SHORT);
           },
         } as ChatPushListener);
       })
       .catch((e) => {
         console.warn('test:zuoyu:init:error:', e);
+        ToastAndroid.show('init error:' + e.toString(), ToastAndroid.SHORT);
       });
   }, []);
 
@@ -69,9 +91,11 @@ export default function App() {
       .prepare()
       .then(() => {
         console.log('test:zuoyu:prepare');
+        ToastAndroid.show('prepare success', ToastAndroid.SHORT);
       })
       .catch((e) => {
         console.warn('test:zuoyu:prepare', e);
+        ToastAndroid.show('prepare error:' + e.toString(), ToastAndroid.SHORT);
       });
   };
 
@@ -85,14 +109,23 @@ export default function App() {
             .getToken()
             .then((token) => {
               console.log('test:zuoyu:getToken:', token);
+              ToastAndroid.show('getToken:' + token, ToastAndroid.SHORT);
             })
             .catch((e) => {
               console.warn('test:zuoyu:getToken:error:', e);
+              ToastAndroid.show(
+                'getToken error:' + e.toString(),
+                ToastAndroid.SHORT
+              );
             });
         }, 1000);
       })
       .catch((e) => {
         console.warn('test:zuoyu:registerPush:error:', e);
+        ToastAndroid.show(
+          'registerPush error:' + e.toString(),
+          ToastAndroid.SHORT
+        );
       });
   };
   const onStopRegistration = () => {
@@ -104,13 +137,22 @@ export default function App() {
           .getToken()
           .then((token) => {
             console.log('test:zuoyu:getToken:', token);
+            ToastAndroid.show('getToken:' + token, ToastAndroid.SHORT);
           })
           .catch((e) => {
             console.warn('test:zuoyu:getToken:error:', e);
+            ToastAndroid.show(
+              'getToken error:' + e.toString(),
+              ToastAndroid.SHORT
+            );
           });
       })
       .catch((e) => {
         console.warn('test:zuoyu:unregisterPush:error:', e);
+        ToastAndroid.show(
+          'unregisterPush error:' + e.toString(),
+          ToastAndroid.SHORT
+        );
       });
   };
 

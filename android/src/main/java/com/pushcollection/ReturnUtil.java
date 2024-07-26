@@ -14,29 +14,35 @@ import org.json.JSONObject;
 public class ReturnUtil {
 
   public static void success(Promise promise, Object data) {
-    if (data instanceof Map) {
-      WritableMap ret = convertJsonObjectToMap(ToJsonUtil.toJson((Map<?, ?>)data));
-      promise.resolve(ret);
-    } else if (data instanceof String) {
-      promise.resolve(data);
-    } else {
-      promise.resolve(null);
-    }
+    ThreadUtil.mainThreadExecute(() -> {
+      if (data instanceof Map) {
+        WritableMap ret = convertJsonObjectToMap(ToJsonUtil.toJson((Map<?, ?>)data));
+        promise.resolve(ret);
+      } else if (data instanceof String) {
+        promise.resolve(data);
+      } else {
+        promise.resolve(null);
+      }
+    });
   }
   public static void fail(Promise promise, int code, String message) {
     ReturnUtil.fail(promise, new PushError(PushErrorCode.fromCode(code), message));
   }
-  public static void fail(Promise promise, Throwable e) { promise.reject(e, convertThrowableToMap(e)); }
+  public static void fail(Promise promise, Throwable e) {
+    ThreadUtil.mainThreadExecute(() -> { promise.reject(e, convertThrowableToMap(e)); });
+  }
   public static void onEvent(DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter, String eventName,
                              Object data) {
-    if (data instanceof Map) {
-      WritableMap ret = convertJsonObjectToMap(ToJsonUtil.toJson((Map<?, ?>)data));
-      eventEmitter.emit(eventName, ret);
-    } else if (data instanceof String) {
-      eventEmitter.emit(eventName, data);
-    } else {
-      eventEmitter.emit(eventName, null);
-    }
+    ThreadUtil.mainThreadExecute(() -> {
+      if (data instanceof Map) {
+        WritableMap ret = convertJsonObjectToMap(ToJsonUtil.toJson((Map<?, ?>)data));
+        eventEmitter.emit(eventName, ret);
+      } else if (data instanceof String) {
+        eventEmitter.emit(eventName, data);
+      } else {
+        eventEmitter.emit(eventName, null);
+      }
+    });
   }
   private static WritableMap convertJsonObjectToMap(JSONObject jsonObject) {
     WritableMap map = Arguments.createMap();

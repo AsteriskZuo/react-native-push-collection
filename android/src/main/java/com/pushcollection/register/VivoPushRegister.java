@@ -25,7 +25,7 @@ public class VivoPushRegister extends BasicPushRegister {
 
   @Override
   public void prepare(Callback callback) {
-    PushClient.getInstance(client.getApplicationContext()).turnOnPush(new com.vivo.push.IPushActionListener() {
+    PushClient.getInstance(getContext()).turnOnPush(new com.vivo.push.IPushActionListener() {
       @Override
       public void onStateChanged(int state) {
         if (state != 0) {
@@ -40,7 +40,7 @@ public class VivoPushRegister extends BasicPushRegister {
   @Override
   public void register(Callback callback) {
     VivoPushConfig f = (VivoPushConfig)getPushConfig();
-    PushClient.getInstance(com.pushcollection.PushClient.getInstance().getApplicationContext())
+    PushClient.getInstance(getContext())
       .getRegId(new IPushQueryActionListener() {
         @Override
         public void onSuccess(String s) {

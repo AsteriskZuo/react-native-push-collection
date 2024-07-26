@@ -18,31 +18,34 @@ function convertToPushType(manufacturer?: string): PushType {
   let ret: PushType = 'unknown';
   console.log('test:zuoyu:convertToPushType:', manufacturer);
   if (manufacturer) {
-    switch (manufacturer) {
-      case 'Google':
+    switch (manufacturer.toLowerCase()) {
+      case 'google':
         ret = 'fcm';
         break;
-      case 'Xiaomi':
+      case 'xiaomi':
         ret = 'xiaomi';
         break;
-      case 'OPPO':
+      case 'oppo':
         ret = 'oppo';
         break;
       case 'vivo':
         ret = 'vivo';
         break;
-      case 'Huawei':
+      case 'huawei':
         ret = 'huawei';
         break;
-      case 'Honor':
+      case 'honor':
         ret = 'honor';
         break;
-      case 'Sony':
-      case 'Samsung':
-      case 'Sony':
-      case 'Motorola':
-      case 'LG':
-      case 'OnePlus':
+      case 'meizu':
+        ret = 'meizu';
+        break;
+      case 'sony':
+      case 'samsung':
+      case 'motorola':
+      case 'lg':
+      case 'realme':
+      case 'oneplus':
         ret = 'unknown';
         break;
 

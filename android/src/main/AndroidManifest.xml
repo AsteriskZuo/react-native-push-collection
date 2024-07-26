@@ -26,6 +26,8 @@
 
   <uses-permission android:name="com.meizu.c2dm.permission.RECEIVE" />
   <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+  <uses-permission android:name="android.intent.category.MASTER_CLEAR.permission.C2D_MESSAGE"
+    tools:ignore="ProtectedPermissions" />
 
   <!--oppo permission-->
   <uses-permission android:name="com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE" />
@@ -95,8 +97,8 @@
     <!--meizu service config-->
     <receiver
       android:name=".listener.MeizuListener"
-      android:exported="false"
-      tools:ignore="ExportedReceiver">
+      android:exported="true"
+      android:permission="com.meizu.cloud.push.permission.MESSAGE">
       <intent-filter>
         <!-- Receiving push messages -->
         <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
@@ -108,7 +110,7 @@
         <action android:name="com.meizu.c2dm.intent.REGISTRATION" />
         <action android:name="com.meizu.c2dm.intent.RECEIVE" />
 
-        <category android:name="com.tencent.qcloud.tim.demo.thirdpush" />
+        <category android:name="${applicationId}" />
       </intent-filter>
     </receiver>
     <!--meizu version-->

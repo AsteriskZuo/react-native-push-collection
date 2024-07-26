@@ -40,9 +40,9 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void init(ReadableMap params, Promise promise) {
     HashMap<String, Object> hashParams = params.toHashMap();
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      String platform = (String)hashParams.getOrDefault("platform", null);
-      String pushType = (String)hashParams.getOrDefault("pushType", null);
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+      String platform = (String)hashParams.get("platform");
+      String pushType = (String)hashParams.get("pushType");
 
       if (pushType == null) {
         ReturnUtil.fail(promise, new PushError(PushErrorCode.PARAM_ERROR, "PushType param is required"));

@@ -226,7 +226,19 @@ HUAWEI_PUSH_APPID=xxx
 
 #### 编写代码
 
-无
+在 `MainApplication` 文件中，在方法 `onCreate`中添加如下代码：
+
+```java
+registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
+```
+
+**注意** `MainApplication` 为入口文件。
+
+```xml
+  <application
+      android:name=".MainApplication">
+  </application>
+```
 
 ## 注意事项
 
