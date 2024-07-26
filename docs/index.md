@@ -21,6 +21,7 @@
       - [配置工程](#配置工程-1)
       - [编写代码](#编写代码-1)
   - [注意事项](#注意事项)
+  - [添加厂商](#添加厂商)
   - [参考资料](#参考资料)
 
 # 详细说明
@@ -244,6 +245,10 @@ registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
 
 1. 该 npm 不能和 `@react-native-firebase/messaging` 共同使用。如果需要使用则请不要使用该库。
 2. 国内用户如果需要使用 `fcm`，可能需要正常访问外网。
+
+## 添加厂商
+
+[详见这里](./add_manufacturer.md)
 
 ## 参考资料
 
