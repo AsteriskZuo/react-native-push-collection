@@ -451,6 +451,8 @@ Pods/
 
 # End of https://www.toptal.com/developers/gitignore/api/cocoapods
 
+output-metadata.json
+
 # fcm ignore
 google-services.json
 GoogleService-Info.plist

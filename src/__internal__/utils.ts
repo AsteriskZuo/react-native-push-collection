@@ -1,4 +1,8 @@
-import { Platform, type PlatformAndroidStatic } from 'react-native';
+import {
+  Platform,
+  ToastAndroid,
+  type PlatformAndroidStatic,
+} from 'react-native';
 import type { PlatformType, PushType } from '../types';
 
 export function getDeviceType(): string | undefined {
@@ -16,7 +20,11 @@ export function getPlatform(): PlatformType {
 
 function convertToPushType(manufacturer?: string): PushType {
   let ret: PushType = 'unknown';
-  console.log('test:zuoyu:convertToPushType:', manufacturer);
+  console.log('convertToPushType:', manufacturer);
+  ToastAndroid.show(
+    'test:zuoyu:convertToPushType:' + manufacturer,
+    ToastAndroid.SHORT
+  );
   if (manufacturer) {
     switch (manufacturer.toLowerCase()) {
       case 'google':

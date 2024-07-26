@@ -29,7 +29,7 @@ public class VivoPushRegister extends BasicPushRegister {
       @Override
       public void onStateChanged(int state) {
         if (state != 0) {
-          callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Vivo init is failed."));
+          callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Vivo turn on is failed." + state));
           return;
         }
         callback.invoke();

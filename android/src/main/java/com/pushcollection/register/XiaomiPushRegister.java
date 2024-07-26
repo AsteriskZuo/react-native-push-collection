@@ -22,7 +22,7 @@ public class XiaomiPushRegister extends BasicPushRegister {
         if (codeResult.getResultCode() == 0) {
           callback.invoke();
         } else {
-          callback.invoke(new PushError(PushErrorCode.PREPARE_ERROR, "Mi push prepare is failed."));
+          callback.invoke(new PushError(PushErrorCode.PREPARE_ERROR, "Mi turn on is failed." + codeResult.getResultCode()));
         }
       }
     });

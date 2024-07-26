@@ -32,7 +32,7 @@ public class HuaweiPushRegister extends BasicPushRegister {
         }
       })
       .addOnFailureListener(
-        e -> { callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Huawei init is failed.")); });
+        e -> { callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Huawei turn on is failed." + e)); });
   }
 
   @Override
