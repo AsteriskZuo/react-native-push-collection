@@ -22,6 +22,7 @@
       - [编写代码](#编写代码-1)
   - [注意事项](#注意事项)
   - [添加厂商](#添加厂商)
+  - [常见问题](#常见问题)
   - [参考资料](#参考资料)
 
 # 详细说明
@@ -78,7 +79,7 @@ ios 平台，用户可以选择使用 apns 或者 fcm 之一。在初始化的�
 应用 app 需要添加推送能力。
 
 ![1](./res/fcm-add-file-to-project.png)
-![1](./res/fcm-add-push-option.png)
+![2](./res/fcm-add-push-option.png)
 
 #### 编写代码
 
@@ -130,9 +131,11 @@ android 平台，用户可以选择 手机厂商 或者 fcm 之一。不支持�
 
 ##### huawei
 
-下载文件 `mcs-services.json`，放在 应用 app 的 android 根目录下，例如： `example/android/app/mcs-services.json`。
+下载文件 `agconnect-services.json`，放在 应用 app 的 android 根目录下，例如： `example/android/app/agconnect-services.json`。
 
 ##### honor
+
+下载文件 `mcs-services.json`，放在 应用 app 的 android 根目录下，例如： `example/android/app/mcs-services.json`。
 
 ##### meizu
 
@@ -249,6 +252,10 @@ registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
 ## 添加厂商
 
 [详见这里](./add_manufacturer.md)
+
+## 常见问题
+
+[常见问题](./qa.md)
 
 ## 参考资料
 
