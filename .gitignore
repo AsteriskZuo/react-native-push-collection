@@ -25,7 +25,6 @@
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -307,7 +306,6 @@ $RECYCLE.BIN/
 
 ### Xcode ###
 
-
 ### Xcode Patch ###
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
@@ -473,3 +471,5 @@ mcs-services.json
 # meizu ignore
 
 # xiaomi ignore
+
+version.ts

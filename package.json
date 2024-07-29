@@ -13,6 +13,7 @@
     "android",
     "ios",
     "cpp",
+    "src/version.ts",
     "*.podspec",
     "!lib/typescript/example",
     "!ios/build",
@@ -34,7 +35,8 @@
     "release": "release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install && yarn example pods",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
+    "sdk-version": "node scripts/generate-version.js"
   },
   "keywords": [
     "react-native",
