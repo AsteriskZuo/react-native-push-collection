@@ -77,6 +77,16 @@ ios 平台，用户可以选择使用 apns 或者 fcm 之一。在初始化的�
 
 需要手动将 `GoogleService-Info.plist` 添加到 应用 app 的 ios 工程中。
 应用 app 需要添加推送能力。
+在 `Info.plist`文件中，设置自动初始化设置为 false。
+
+```xml
+<plist version="1.0">
+<dict>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
+</dict>
+</plist>
+```
 
 ![1](./res/fcm-add-file-to-project.png)
 ![2](./res/fcm-add-push-option.png)
@@ -248,6 +258,8 @@ registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
 
 1. 该 npm 不能和 `@react-native-firebase/messaging` 共同使用。如果需要使用则请不要使用该库。
 2. 国内用户如果需要使用 `fcm`，可能需要正常访问外网。
+3. ios 平台，如果使用 `apns`，返回的 `token` 是经过 `base64` 编码的字符串，如果传给原生，需要 `base64` 解码操作。
+4. ios 平台，使用了`[UNUserNotificationCenter currentNotificationCenter].delegate = self;`，可能导致用户无法使用该代理接收通知。
 
 ## 添加厂商
 

@@ -150,6 +150,7 @@ PODS:
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.4.1)
+  - HyphenateChat (4.6.1)
   - libevent (2.1.12)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
@@ -380,6 +381,9 @@ PODS:
   - React-jsinspector (0.71.11)
   - React-logger (0.71.11):
     - glog
+  - react-native-chat-sdk (1.5.0):
+    - HyphenateChat (= 4.6.1)
+    - React-Core
   - react-native-push-collection (0.1.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
@@ -518,6 +522,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-chat-sdk (from `../node_modules/react-native-chat-sdk`)
   - react-native-push-collection (from `../..`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -556,6 +561,7 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - GTMSessionFetcher
+    - HyphenateChat
     - libevent
     - nanopb
     - OpenSSL-Universal
@@ -603,6 +609,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-chat-sdk:
+    :path: "../node_modules/react-native-chat-sdk"
   react-native-push-collection:
     :path: "../.."
   React-perflogger:
@@ -660,6 +668,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   GTMSessionFetcher: 8000756fc1c19d2e5697b90311f7832d2e33f6cd
+  HyphenateChat: 006902faa37c847b0a6693bd3876873848c06c26
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
@@ -678,6 +687,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 089cd07c76ecf498960a64ba8ae0f2dddd382f44
   React-jsinspector: b6ed4cb3ffa27a041cd440300503dc512b761450
   React-logger: 186dd536128ae5924bc38ed70932c00aa740cd5b
+  react-native-chat-sdk: a608aa39e5e75a66dcd68860617ba9afcf9ef566
   react-native-push-collection: 70572d05011656a038cd4bdf9c68c2889b3d50f8
   React-perflogger: e706562ab7eb8eb590aa83a224d26fa13963d7f2
   React-RCTActionSheet: 57d4bd98122f557479a3359ad5dad8e109e20c5a

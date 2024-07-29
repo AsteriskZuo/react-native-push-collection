@@ -3,6 +3,7 @@
 #import "PushClient.h"
 #import "PushType.h"
 #import "ReturnUtil.h"
+#import "ThreadUtil.h"
 #import "ToMapUtil.h"
 
 static NSString *const TAG = @"PushCollection";
@@ -55,23 +56,35 @@ RCT_REMAP_METHOD(init, init
                                              code:commonError
                                          userInfo:@{NSLocalizedDescriptionKey : @"Device type is not supported"}]];
     }
-    [[PushClient sharedInstance] setConfig:pushType];
-    [ReturnUtil success:resolve withData:nil];
+    [ThreadUtil asyncExecute:^{
+      [[PushClient sharedInstance] init:pushType withResolver:resolve withRejecter:reject];
+    }];
+}
+
+RCT_REMAP_METHOD(prepare, prepare
+                 : (NSDictionary *)params withResolver
+                 : (RCTPromiseResolveBlock)resolve withRejecter
+                 : (RCTPromiseRejectBlock)reject) {
+    [ThreadUtil asyncExecute:^{
+      [[PushClient sharedInstance] prepare:resolve withRejecter:reject];
+    }];
 }
 
 RCT_REMAP_METHOD(registerPush, registerPush
                  : (NSDictionary *)params withResolver
                  : (RCTPromiseResolveBlock)resolve withRejecter
                  : (RCTPromiseRejectBlock)reject) {
-    [[PushClient sharedInstance] registerPush];
-    [ReturnUtil success:resolve withData:nil];
+    [ThreadUtil asyncExecute:^{
+      [[PushClient sharedInstance] registerPush:resolve withRejecter:reject];
+    }];
 }
 
 RCT_REMAP_METHOD(unregisterPush, unregisterPushWithResolver
                  : (RCTPromiseResolveBlock)resolve withRejecter
                  : (RCTPromiseRejectBlock)reject) {
-    [[PushClient sharedInstance] unregisterPush];
-    [ReturnUtil success:resolve withData:nil];
+    [ThreadUtil asyncExecute:^{
+      [[PushClient sharedInstance] unregisterPush:resolve withRejecter:reject];
+    }];
 }
 
 RCT_REMAP_METHOD(getPushConfig, getPushConfigWithResolver
@@ -108,7 +121,9 @@ RCT_REMAP_METHOD(getToken, getTokenWithResolver
 }
 
 + (BOOL)requiresMainQueueSetup {
-    //  WARN  Module PushCollection requires main queue setup since it overrides `init` but doesn't implement `requiresMainQueueSetup`. In a future release React Native will default to initializing all native modules on a background thread unless explicitly opted-out of.
+    //  WARN  Module PushCollection requires main queue setup since it overrides `init` but doesn't implement
+    //  `requiresMainQueueSetup`. In a future release React Native will default to initializing all native modules on a
+    //  background thread unless explicitly opted-out of.
     return YES;
 }
 

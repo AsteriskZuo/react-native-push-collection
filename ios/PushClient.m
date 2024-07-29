@@ -7,6 +7,7 @@
 
 #import "PushClient.h"
 #import "Const.h"
+#import "PushError.h"
 #import "PushType.h"
 #import "ReturnUtil.h"
 #import "ThreadUtil.h"
@@ -31,7 +32,7 @@ static NSString *const TAG = @"PushClient";
     __weak RCTEventEmitter *_eventEmitter;
     NSData *_Nullable _apnsToken;
     NSString *_Nullable _fcmToken;
-    NSString *_pushType;
+    PushConfig *_config;
 }
 
 @end
@@ -55,10 +56,30 @@ static NSString *const TAG = @"PushClient";
 - (void)setEventEmitter:(RCTEventEmitter *)eventEmitter {
     _eventEmitter = eventEmitter;
 }
-- (void)setConfig:(NSString *)pushType {
-    _pushType = pushType;
+- (void)init:(NSString *)pushType
+    withResolver:(RCTPromiseResolveBlock)resolve
+    withRejecter:(RCTPromiseRejectBlock)reject {
+
+    [ThreadUtil mainThreadExecute:^{
+      [self requestNotificationPermission];
+      [self setUserNotificationDelegate];
+      [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }];
+
+    if ([pushType isEqual:PushTypeFCM]) {
+        NSString *senderId = [[[FIRApp defaultApp] options] GCMSenderID];
+        _config = [[FcmPushConfig alloc] initWithId:senderId];
+        [self initFireMessaging:self];
+    } else if ([pushType isEqual:PushTypeAPNS]) {
+        _config = [[ApnsPushConfig alloc] init];
+    } else {
+        [ReturnUtil fail:reject withCode:PushErrorCodeParam withMessage:[PushErrorHelper getDomain:PushErrorCodeParam]];
+        return;
+    }
+    [ReturnUtil success:resolve withData:nil];
 }
 - (nullable NSString *)getDeviceToken {
+    NSString *_pushType = [[self getPushConfig] pushType];
     if ([_pushType isEqual:PushTypeFCM]) {
         return _fcmToken;
     } else if ([_pushType isEqual:PushTypeAPNS]) {
@@ -69,64 +90,46 @@ static NSString *const TAG = @"PushClient";
     return nil;
 }
 - (nullable PushConfig *)getPushConfig {
+    return self->_config;
+}
+- (void)prepare:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject {
+    [ReturnUtil success:resolve withData:nil];
+}
+- (void)registerPush:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject {
+    NSString *_pushType = [[self getPushConfig] pushType];
     if ([_pushType isEqual:PushTypeFCM]) {
-        NSString *senderId = [[[FIRApp defaultApp] options] GCMSenderID];
-        return [[FcmPushConfig alloc] initWithId:senderId];
+        __weak typeof(self) weakSelf = self;
+        [[FIRMessaging messaging] tokenWithCompletion:^(NSString *token, NSError *error) {
+          if (error != nil) {
+              [ReturnUtil fail:reject withError:error];
+          } else {
+              [weakSelf setPushToken:token];
+              [ReturnUtil success:resolve withData:token];
+          }
+        }];
     } else if ([_pushType isEqual:PushTypeAPNS]) {
-        return [[ApnsPushConfig alloc] init];
+        if (_apnsToken != nil) {
+            [ReturnUtil success:resolve withData:[self stringWithDeviceToken:_apnsToken]];
+        } else {
+            [ReturnUtil success:resolve withData:nil];
+        }
     }
-    return nil;
 }
-- (void)registerPush {
-    __weak typeof(self) weakSelf = self;
-    NSString *pushType = _pushType;
-    [ThreadUtil mainThreadExecute:^{
-        [weakSelf requestNotificationPermission];
-        [weakSelf setUserNotificationDelegate];
-
-        if ([pushType isEqual:PushTypeFCM]) {
-
-            [weakSelf setFirebaseOption:[FIROptions defaultOptions]];
-            [weakSelf setFirebaseMessageDelegate:self];
-            [weakSelf getFcmToken];
-//            [[FIRMessaging messaging] tokenWithCompletion:^(NSString *token, NSError *error) {
-//              if (error != nil) {
-//                  NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-//                  map[@"error"] = [error userInfo];
-//                  [self sendEvent:onError withData:map];
-//              } else {
-//                  [weakSelf setPushToken:token];
-//              }
-//            }];
-        } else if ([pushType isEqual:PushTypeAPNS]) {
-        }
-        
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }];
-}
-- (void)unregisterPush {
-    __weak typeof(self) weakSelf = self;
-    NSString *pushType = _pushType;
-    
-    [ThreadUtil mainThreadExecute:^{
-        if ([pushType isEqual:PushTypeFCM]) {
-            
-            [weakSelf setFirebaseMessageDelegate:nil];
-            [weakSelf removeFcmToken];
-//            [[FIRMessaging messaging] deleteTokenWithCompletion:^(NSError *_Nullable error) {
-//              if (error != nil) {
-//                  NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-//                  map[@"error"] = [error userInfo];
-//                  [weakSelf sendEvent:onError withData:map];
-//              } else {
-//                  [weakSelf setPushToken:nil];
-//              }
-//            }];
-        } else if ([pushType isEqual:PushTypeAPNS]) {
-        }
-        
-        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-    }];
+- (void)unregisterPush:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject {
+    NSString *_pushType = [[self getPushConfig] pushType];
+    if ([_pushType isEqual:PushTypeFCM]) {
+        __weak typeof(self) weakSelf = self;
+        [[FIRMessaging messaging] deleteTokenWithCompletion:^(NSError *_Nullable error) {
+          if (error != nil) {
+              [ReturnUtil fail:reject withError:error];
+          } else {
+              [weakSelf setPushToken:nil];
+              [ReturnUtil success:resolve withData:nil];
+          }
+        }];
+    } else if ([_pushType isEqual:PushTypeAPNS]) {
+        [ReturnUtil success:resolve withData:nil];
+    }
 }
 
 - (void)sendEvent:(NSString *)methodType withData:(NSMutableDictionary *)data {
@@ -135,46 +138,12 @@ static NSString *const TAG = @"PushClient";
 }
 
 - (void)setPushToken:(id)token {
+    NSString *_pushType = [[self getPushConfig] pushType];
     if ([_pushType isEqual:PushTypeFCM]) {
         _fcmToken = token;
     } else if ([_pushType isEqual:PushTypeAPNS]) {
         _apnsToken = token;
     }
-}
-
-- (void)getFcmToken {
-    __weak typeof(self) weakSelf = self;
-    NSData * apnsToken = [FIRMessaging messaging].APNSToken;
-    if (apnsToken != nil) {
-        [[FIRMessaging messaging] tokenWithCompletion:^(NSString *token, NSError *error) {
-          if (error != nil) {
-              NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-              map[@"error"] = [error userInfo];
-              [self sendEvent:onError withData:map];
-          } else {
-              [weakSelf setPushToken:token];
-              NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-              map[onReceivePushToken] = token;
-              [weakSelf sendEvent:onReceivePushToken withData:map];
-          }
-        }];
-    }
-}
-
-- (void)removeFcmToken {
-    __weak typeof(self) weakSelf = self;
-    [[FIRMessaging messaging] deleteTokenWithCompletion:^(NSError *_Nullable error) {
-      if (error != nil) {
-          NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-          map[@"error"] = [error userInfo];
-          [weakSelf sendEvent:onError withData:map];
-      } else {
-          [weakSelf setPushToken:nil];
-          NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-          map[onReceivePushToken] = nil;
-          [weakSelf sendEvent:onReceivePushToken withData:map];
-      }
-    }];
 }
 
 - (void)setFirebaseOption:(FIROptions *)options {
@@ -190,7 +159,11 @@ static NSString *const TAG = @"PushClient";
         [FIRApp configureWithOptions:options];
     }
 }
-- (void)setFirebaseMessageDelegate:(id<FIRMessagingDelegate>)delegate {
+- (void)initFireMessaging:(id<FIRMessagingDelegate>)delegate {
+    [self setFirebaseOption:[FIROptions defaultOptions]];
+    //    if ([[FIRMessaging messaging] isAutoInitEnabled] == NO) {
+    //        [[FIRMessaging messaging] setAutoInitEnabled:YES];
+    //    }
     if ([FIRMessaging messaging].delegate == nil) {
         [FIRMessaging messaging].autoInitEnabled = YES;
         [FIRMessaging messaging].delegate = delegate;
@@ -244,61 +217,61 @@ static NSString *const TAG = @"PushClient";
 }
 
 - (NSString *)stringWithDeviceToken:(NSData *)deviceToken {
-    const char *data = [deviceToken bytes];
-    NSMutableString *token = [NSMutableString string];
-
-    for (NSUInteger i = 0; i < [deviceToken length]; i++) {
-        [token appendFormat:@"%02.2hhX", data[i]];
-    }
-
-    return [token copy];
+    return [deviceToken base64EncodedStringWithOptions:0];
+    //    const char *data = [deviceToken bytes];
+    //    NSMutableString *token = [NSMutableString string];
+    //
+    //    for (NSUInteger i = 0; i < [deviceToken length]; i++) {
+    //        [token appendFormat:@"%02.2hhX", data[i]];
+    //    }
+    //
+    //    return [token copy];
 }
 
 - (void)test1:(NSData *)deviceTokenData {
 
-// 假设你有一个 NSData 类型的 deviceToken
-//NSData *deviceTokenData = ...;
+    // 假设你有一个 NSData 类型的 deviceToken
+    // NSData *deviceTokenData = ...;
 
-// 转换为 NSString
-NSMutableString *deviceTokenString = [NSMutableString string];
-const char *bytes = deviceTokenData.bytes;
-NSInteger count = deviceTokenData.length;
-for (int i = 0; i < count; i++) {
-    [deviceTokenString appendFormat:@"%02x", bytes[i]&0x000000FF];
-}
+    // 转换为 NSString
+    NSMutableString *deviceTokenString = [NSMutableString string];
+    const char *bytes = deviceTokenData.bytes;
+    NSInteger count = deviceTokenData.length;
+    for (int i = 0; i < count; i++) {
+        [deviceTokenString appendFormat:@"%02x", bytes[i] & 0x000000FF];
+    }
 
-// 打印转换后的 NSString
-NSLog(@"Device Token String: %@", deviceTokenString);
+    // 打印转换后的 NSString
+    NSLog(@"Device Token String: %@", deviceTokenString);
 
-// 转换回 NSData
-NSMutableData *deviceTokenDataAgain = [NSMutableData data];
-for (int i = 0; i < deviceTokenString.length; i += 2) {
-    unsigned int byte;
-    [[NSScanner scannerWithString:[deviceTokenString substringWithRange:NSMakeRange(i, 2)]] scanHexInt:&byte];
-    [deviceTokenDataAgain appendBytes:&byte length:1];
-}
+    // 转换回 NSData
+    NSMutableData *deviceTokenDataAgain = [NSMutableData data];
+    for (int i = 0; i < deviceTokenString.length; i += 2) {
+        unsigned int byte;
+        [[NSScanner scannerWithString:[deviceTokenString substringWithRange:NSMakeRange(i, 2)]] scanHexInt:&byte];
+        [deviceTokenDataAgain appendBytes:&byte length:1];
+    }
 
-// 打印转换回的 NSData
-NSLog(@"Device Token Data Again: %@", deviceTokenDataAgain);
+    // 打印转换回的 NSData
+    NSLog(@"Device Token Data Again: %@", deviceTokenDataAgain);
 }
 
 - (void)test2:(NSData *)deviceTokenData {
 
-// 假设你有一个 NSData 类型的 deviceToken
-//NSData *deviceTokenData = ...;
+    // 假设你有一个 NSData 类型的 deviceToken
+    // NSData *deviceTokenData = ...;
 
-// 转换为 NSString
+    // 转换为 NSString
     NSString *deviceTokenString = [deviceTokenData base64EncodedStringWithOptions:0];
 
+    // 打印转换后的 NSString
+    NSLog(@"Device Token String: %@", deviceTokenString);
 
-// 打印转换后的 NSString
-NSLog(@"Device Token String: %@", deviceTokenString);
-
-// 转换回 NSData
+    // 转换回 NSData
     NSData *deviceTokenDataAgain = [[NSData alloc] initWithBase64EncodedString:deviceTokenString options:0];
 
-// 打印转换回的 NSData
-NSLog(@"Device Token Data Again: %@", deviceTokenDataAgain);
+    // 打印转换回的 NSData
+    NSLog(@"Device Token Data Again: %@", deviceTokenDataAgain);
 }
 
 - (void)application:(UIApplication *)application
@@ -307,11 +280,13 @@ NSLog(@"Device Token Data Again: %@", deviceTokenDataAgain);
     [self setPushToken:deviceToken];
     [self test1:deviceToken];
     [self test2:deviceToken];
+    NSString *_pushType = [[self getPushConfig] pushType];
     if ([_pushType isEqual:PushTypeFCM]) {
         [FIRMessaging messaging].APNSToken = deviceToken;
     } else if ([_pushType isEqual:PushTypeAPNS]) {
+        NSString *token = [self stringWithDeviceToken:deviceToken];
         NSMutableDictionary *map = [NSMutableDictionary dictionary];
-        map[@"token"] = [self stringWithDeviceToken:deviceToken];
+        map[@"token"] = token;
         [self sendEvent:onReceivePushToken withData:map];
     }
 }
@@ -334,6 +309,7 @@ NSLog(@"Device Token Data Again: %@", deviceTokenDataAgain);
     [self setPushToken:fcmToken];
     NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
     map[@"token"] = fcmToken;
+    NSString *_pushType = [[self getPushConfig] pushType];
     if ([_pushType isEqual:PushTypeFCM]) {
         [self sendEvent:onReceivePushToken withData:map];
     }

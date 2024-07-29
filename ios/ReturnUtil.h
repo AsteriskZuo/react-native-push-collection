@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)onEvent:(RCTEventEmitter *)eventEmitter withMethod:(NSString *)methodType withData:(nullable NSObject *)data;
 + (void)success:(RCTPromiseResolveBlock)resolve withData:(nullable NSObject *)data;
 + (void)fail:(RCTPromiseRejectBlock)reject withError:(NSError *)error;
-+ (void)fail:(RCTPromiseRejectBlock)reject withCode:(NSString *)code withMessage:(NSString *)message;
++ (void)fail:(RCTPromiseRejectBlock)reject withCode:(NSInteger)code withMessage:(NSErrorDomain _Nonnull)domain;
 @end
 
 NS_ASSUME_NONNULL_END

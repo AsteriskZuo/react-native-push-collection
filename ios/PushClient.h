@@ -15,11 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PushClient : NSObject
 + (instancetype)sharedInstance;
 - (void)setEventEmitter:(RCTEventEmitter *)eventEmitter;
-- (void)setConfig:(NSString *)deviceType;
+- (void)init:(NSString *)deviceType
+    withResolver:(RCTPromiseResolveBlock)resolve
+    withRejecter:(RCTPromiseRejectBlock)reject;
 - (nullable NSString *)getDeviceToken;
 - (nullable PushConfig *)getPushConfig;
-- (void)registerPush;
-- (void)unregisterPush;
+- (void)prepare:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject;
+- (void)registerPush:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject;
+- (void)unregisterPush:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
