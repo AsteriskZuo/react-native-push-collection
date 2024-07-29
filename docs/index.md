@@ -51,6 +51,8 @@ npx react-native@latest init --version 0.73.2 PushProjectDemo
 yarn add react-native-push-collection
 ```
 
+**注意** 假设 创建的项目名为 `PushProjectDemo`
+
 ### ios 平台
 
 ios 平台，用户可以选择使用 apns 或者 fcm 之一。在初始化的时候指定选择，不支持动态切换。
@@ -65,7 +67,7 @@ ios 平台，用户可以选择使用 apns 或者 fcm 之一。在初始化的�
 
 ##### fcm
 
-下载文件 `GoogleService-Info.plist`, 放在 应用 app 的 ios 根部目录下。例如：`example/ios/PushCollectionExample/GoogleService-Info.plist`。
+下载文件 `GoogleService-Info.plist`, 放在 应用 app 的 ios 根部目录下。例如：`example/ios/PushProjectDemo/GoogleService-Info.plist`。
 
 #### 配置工程
 
@@ -86,6 +88,21 @@ ios 平台，用户可以选择使用 apns 或者 fcm 之一。在初始化的�
 	<false/>
 </dict>
 </plist>
+```
+
+修改应用的 `Podfile` 文件内容，添加如下内容：
+
+```ruby
+target 'PushProjectDemo' do
+  # ...
+
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseAuth', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseMessaging', :modular_headers => true
+
+  # ...
+end
 ```
 
 ![1](./res/fcm-add-file-to-project.png)
