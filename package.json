@@ -1,6 +1,6 @@
 {
   "name": "react-native-push-collection",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha.0",
   "description": "push collection",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -31,12 +31,13 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepack": "bob build",
+    "prepack": "yarn run sdk-version && yarn run sdk-api",
     "release": "release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
-    "sdk-version": "node scripts/generate-version.js"
+    "sdk-version": "node scripts/generate-version.js",
+    "sdk-api": "bob build"
   },
   "keywords": [
     "react-native",
