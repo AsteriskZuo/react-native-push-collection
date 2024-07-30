@@ -105,42 +105,42 @@ target 'PushProjectDemo' do
 end
 ```
 
-![1](./res/fcm-add-file-to-project.png)
-![2](./res/fcm-add-push-option.png)
+![1](../res/fcm-add-file-to-project.png)
+![2](../res/fcm-add-push-option.png)
 
 #### 编写代码
 
-以 `objective-c` 版本为例。
+以 `objc` 版本为例。
 
 在 `AppDelegate.mm` 中，添加如下代码。
 
 添加头文件
 
-```objective-c
+```objc
 #import <react-native-push-collection/PushClient.h>
 ```
 
 在 `AppDelegate` 的 `- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions` 中添加代码
 
-```objective-c
+```objc
 [[PushClient sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 ```
 
 在 `AppDelegate` 的 `- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken` 中添加代码
 
-```objective-c
+```objc
 [[PushClient sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 ```
 
 在 `AppDelegate` 的 `- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;` 中添加代码
 
-```objective-c
+```objc
 [[PushClient sharedInstance] application:application didFailToRegisterForRemoteNotificationsWithError:error];
 ```
 
 在 `AppDelegate` 的 `- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler` 中添加代码
 
-```objective-c
+```objc
 [[PushClient sharedInstance] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 ```
 
