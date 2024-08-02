@@ -126,6 +126,8 @@ end
 [[PushClient sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 ```
 
+下面的代码实现可选，如果没有实现，则内部有默认调用。
+
 在 `AppDelegate` 的 `- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken` 中添加代码
 
 ```objc

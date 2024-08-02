@@ -36,25 +36,25 @@
   return true;
 }
 
-// Explicitly define remote notification delegates to ensure compatibility with some third-party libraries
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
-  [[PushClient sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
-  return [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
-}
-
-// Explicitly define remote notification delegates to ensure compatibility with some third-party libraries
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{
-  [[PushClient sharedInstance] application:application didFailToRegisterForRemoteNotificationsWithError:error];
-  return [super application:application didFailToRegisterForRemoteNotificationsWithError:error];
-}
-
-// Explicitly define remote notification delegates to ensure compatibility with some third-party libraries
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
-  [[PushClient sharedInstance] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
-  return [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
-}
+//// Explicitly define remote notification delegates to ensure compatibility with some third-party libraries
+//- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+//{
+//  [[PushClient sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+//  return [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+//}
+//
+//// Explicitly define remote notification delegates to ensure compatibility with some third-party libraries
+//- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+//{
+//  [[PushClient sharedInstance] application:application didFailToRegisterForRemoteNotificationsWithError:error];
+//  return [super application:application didFailToRegisterForRemoteNotificationsWithError:error];
+//}
+//
+//// Explicitly define remote notification delegates to ensure compatibility with some third-party libraries
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+//{
+//  [[PushClient sharedInstance] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+//  return [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+//}
 
 @end

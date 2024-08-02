@@ -6,6 +6,8 @@
 #import "ThreadUtil.h"
 #import "ToMapUtil.h"
 
+#import "RCTAppDelegate.h"
+
 static NSString *const TAG = @"PushCollection";
 
 @implementation PushCollection
@@ -134,6 +136,29 @@ RCT_REMAP_METHOD(getTokenFlow, getTokenFlow
     //  `requiresMainQueueSetup`. In a future release React Native will default to initializing all native modules on a
     //  background thread unless explicitly opted-out of.
     return YES;
+}
+
+@end
+
+@implementation RCTAppDelegate (Push)
+
+// !!! Do not implement it, otherwise the program will fail.
+//- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+//    return [PushClient.sharedInstance application:application didFinishLaunchingWithOptions:launchOptions];
+//}
+- (void)application:(UIApplication *)application
+    didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [PushClient.sharedInstance application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    [PushClient.sharedInstance application:application didFailToRegisterForRemoteNotificationsWithError:error];
+}
+- (void)application:(UIApplication *)application
+    didReceiveRemoteNotification:(NSDictionary *)userInfo
+          fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [PushClient.sharedInstance application:application
+              didReceiveRemoteNotification:userInfo
+                    fetchCompletionHandler:completionHandler];
 }
 
 @end

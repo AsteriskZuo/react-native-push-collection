@@ -130,6 +130,8 @@ In the `- (BOOL)application:(UIApplication *)application didFinishLaunchingWithO
 [[PushClient sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 ```
 
+The following code implementation is optional, if not implemented, there is a default call internally.
+
 In the `- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken` method of `AppDelegate`, add the code:
 
 ```objc
