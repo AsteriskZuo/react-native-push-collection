@@ -22,7 +22,8 @@ public class XiaomiPushRegister extends BasicPushRegister {
         if (codeResult.getResultCode() == 0) {
           callback.invoke();
         } else {
-          callback.invoke(new PushError(PushErrorCode.PREPARE_ERROR, "Mi turn on is failed." + codeResult.getResultCode()));
+          callback.invoke(
+            new PushError(PushErrorCode.PREPARE_ERROR, "Mi turn on is failed." + codeResult.getResultCode()));
         }
       }
     });
@@ -30,8 +31,11 @@ public class XiaomiPushRegister extends BasicPushRegister {
 
   @Override
   public void register(Callback callback) {
-    setDeviceToken(MiPushClient.getRegId(getContext()));
     String t = getDeviceToken();
+    if (t == null || t.contentEquals("")) {
+      t = MiPushClient.getRegId(getContext());
+      setDeviceToken(t);
+    }
     if (t == null || t.contentEquals("")) {
       XiaomiPushConfig f = (XiaomiPushConfig)getPushConfig();
       MiPushClient.registerPush(getContext(), f.appId, f.appKey);
@@ -46,14 +50,5 @@ public class XiaomiPushRegister extends BasicPushRegister {
     MiPushClient.unregisterPush(getContext());
     setDeviceToken(null);
     callback.invoke();
-  }
-
-  @Override
-  public String getDeviceToken() {
-    String t = super.getDeviceToken();
-    if (t == null || t.contentEquals("")) {
-      setDeviceToken(MiPushClient.getRegId(getContext()));
-    }
-    return super.getDeviceToken();
   }
 }

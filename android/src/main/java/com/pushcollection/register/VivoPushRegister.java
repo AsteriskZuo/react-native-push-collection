@@ -39,9 +39,10 @@ public class VivoPushRegister extends BasicPushRegister {
 
   @Override
   public void register(Callback callback) {
-    VivoPushConfig f = (VivoPushConfig)getPushConfig();
-    PushClient.getInstance(getContext())
-      .getRegId(new IPushQueryActionListener() {
+    String t = getDeviceToken();
+    if (t == null || t.contentEquals("")) {
+      VivoPushConfig f = (VivoPushConfig)getPushConfig();
+      PushClient.getInstance(getContext()).getRegId(new IPushQueryActionListener() {
         @Override
         public void onSuccess(String s) {
           setDeviceToken(s);
@@ -54,6 +55,9 @@ public class VivoPushRegister extends BasicPushRegister {
                                                                         + "register error" + integer));
         }
       });
+    } else {
+      callback.invoke(t);
+    }
   }
 
   @Override

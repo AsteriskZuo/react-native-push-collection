@@ -384,7 +384,11 @@ PODS:
   - react-native-chat-sdk (1.5.0):
     - HyphenateChat (= 4.6.1)
     - React-Core
-  - react-native-push-collection (0.1.0):
+  - react-native-push-collection (1.0.0-alpha.0):
+    - FirebaseAuth (>= 10.0.0)
+    - FirebaseCore (>= 10.0.0)
+    - FirebaseMessaging (>= 10.0.0)
+    - GoogleUtilities
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - React-perflogger (0.71.11)
@@ -479,9 +483,9 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
-  - FirebaseAuth
-  - FirebaseCore
-  - FirebaseMessaging
+  - FirebaseAuth (>= 10.0.0)
+  - FirebaseCore (>= 10.0.0)
+  - FirebaseMessaging (>= 10.0.0)
   - Flipper (= 0.125.0)
   - Flipper-Boost-iOSX (= 1.76.0.1.11)
   - Flipper-DoubleConversion (= 3.2.0.1)
@@ -688,7 +692,7 @@ SPEC CHECKSUMS:
   React-jsinspector: b6ed4cb3ffa27a041cd440300503dc512b761450
   React-logger: 186dd536128ae5924bc38ed70932c00aa740cd5b
   react-native-chat-sdk: a608aa39e5e75a66dcd68860617ba9afcf9ef566
-  react-native-push-collection: 70572d05011656a038cd4bdf9c68c2889b3d50f8
+  react-native-push-collection: a8f1319692d55b24cc79b0b4706e74900b62e70f
   React-perflogger: e706562ab7eb8eb590aa83a224d26fa13963d7f2
   React-RCTActionSheet: 57d4bd98122f557479a3359ad5dad8e109e20c5a
   React-RCTAnimation: ccf3ef00101ea74bda73a045d79a658b36728a60
@@ -707,6 +711,6 @@ SPEC CHECKSUMS:
   Yoga: f7decafdc5e8c125e6fa0da38a687e35238420fa
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 258713d2972d65fbda8b4d65f8e2a506a2f27aa6
+PODFILE CHECKSUM: c5746b786ae7e223ef84205e97cf6df4771ab4bd
 
 COCOAPODS: 1.14.2

@@ -43,19 +43,25 @@ public class HonorPushRegister extends BasicPushRegister {
       callback.invoke(new PushError(PushErrorCode.NO_SUPPROT_ERROR, "Honor Push is not supported"));
       return;
     }
-    HonorPushClient.getInstance().getPushToken(new HonorPushCallback<String>() {
-      @Override
-      public void onSuccess(String s) {
-        setDeviceToken(s);
-        callback.invoke(getDeviceToken());
-      }
 
-      @Override
-      public void onFailure(int i, String s) {
-        callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, "{"
-                                                                      + "\"code\":" + i + ",\"message\":" + s + "}"));
-      }
-    });
+    String t = getDeviceToken();
+    if (t == null || t.contentEquals("")) {
+      HonorPushClient.getInstance().getPushToken(new HonorPushCallback<String>() {
+        @Override
+        public void onSuccess(String s) {
+          setDeviceToken(s);
+          callback.invoke(getDeviceToken());
+        }
+
+        @Override
+        public void onFailure(int i, String s) {
+          callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, "{"
+                                                                        + "\"code\":" + i + ",\"message\":" + s + "}"));
+        }
+      });
+    } else {
+      callback.invoke(t);
+    }
   }
 
   @Override

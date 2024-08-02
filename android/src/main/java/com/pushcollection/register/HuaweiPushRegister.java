@@ -22,17 +22,13 @@ public class HuaweiPushRegister extends BasicPushRegister {
 
   @Override
   public void prepare(Callback callback) {
-    HmsMessaging.getInstance(client.getApplicationContext())
-      .turnOnPush()
-      .addOnCompleteListener(task -> {
-        if (!task.isSuccessful()) {
-          callback.invoke(new PushError(PushErrorCode.INIT_ERROR, task.getException().getMessage()));
-        } else {
-          callback.invoke();
-        }
-      })
-      .addOnFailureListener(
-        e -> { callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Huawei turn on is failed." + e)); });
+    HmsMessaging.getInstance(client.getApplicationContext()).turnOnPush().addOnCompleteListener(task -> {
+      if (!task.isSuccessful()) {
+        callback.invoke(new PushError(PushErrorCode.INIT_ERROR, task.getException().getMessage()));
+      } else {
+        callback.invoke();
+      }
+    });
   }
 
   @Override

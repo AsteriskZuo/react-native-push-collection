@@ -132,6 +132,27 @@ static NSString *const TAG = @"PushClient";
     }
 }
 
+- (void)getTokenFlow:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject {
+    NSString *token = [self getDeviceToken];
+    if (token == nil) {
+        [self
+            registerPush:^(id result) {
+              if ([result isKindOfClass:[NSString class]]) {
+                  NSMutableDictionary *map = [NSMutableDictionary dictionary];
+                  map[@"token"] = (NSString *)result;
+                  [self sendEvent:onReceivePushToken withData:map];
+              }
+              [ReturnUtil success:resolve withData:nil];
+            }
+            withRejecter:reject];
+    } else {
+        NSMutableDictionary *map = [NSMutableDictionary dictionary];
+        map[@"token"] = token;
+        [self sendEvent:onReceivePushToken withData:map];
+        [ReturnUtil success:resolve withData:nil];
+    }
+}
+
 - (void)sendEvent:(NSString *)methodType withData:(NSMutableDictionary *)data {
     data[@"type"] = methodType;
     [ReturnUtil onEvent:_eventEmitter withMethod:onNativeNotification withData:data];

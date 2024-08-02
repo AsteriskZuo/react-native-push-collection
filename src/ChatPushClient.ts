@@ -159,4 +159,15 @@ export class ChatPushClient {
   public getToken(): Promise<string | undefined> {
     return PushCollection.getToken();
   }
+
+  /**
+   * Get the push token.
+   *
+   * It is a collection of {@link prepare}, {@link registerPush} and {@link getToken} interfaces.
+   *
+   * @returns If an error occurs, an exception object is thrown.
+   */
+  public getTokenAsync(): Promise<void> {
+    return PushCollection.getTokenFlow({});
+  }
 }

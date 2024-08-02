@@ -3,6 +3,7 @@ package com.pushcollection;
 import android.content.Context;
 import android.util.Log;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.pushcollection.config.FcmPushConfig;
@@ -126,6 +127,8 @@ public class PushClient implements PushListener {
           };
         });
       });
+    } else {
+      callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, "PushRegister init failed"));
     }
   }
 
@@ -142,12 +145,52 @@ public class PushClient implements PushListener {
           }
         });
       });
+    } else {
+      callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, "PushRegister init failed"));
     }
   }
 
   public void prepare(Callback callback) {
     if (this.pushRegister != null) {
       ThreadUtil.asyncExecute(() -> { pushRegister.prepare(callback); });
+    } else {
+      callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, "PushRegister init failed"));
+    }
+  }
+
+  public void getTokenFlow(Promise promise) {
+    if (this.pushRegister != null) {
+      ThreadUtil.asyncExecute(() -> {
+        pushRegister.prepare(new Callback() {
+          @Override
+          public void invoke(Object... objects) {
+            if (objects.length > 0 && objects[0] instanceof PushError) {
+              ReturnUtil.fail(promise, (PushError)objects[0]);
+            } else {
+              ThreadUtil.asyncExecute(() -> {
+                pushRegister.register(new Callback() {
+                  @Override
+                  public void invoke(Object... objects) {
+                    if (objects.length > 0 && objects[0] instanceof PushError) {
+                      ReturnUtil.fail(promise, (PushError)objects[0]);
+                    } else {
+                      if (objects.length > 0 && objects[0] instanceof String) {
+                        String token = (String)objects[0];
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("token", token);
+                        sendEvent(Const.onReceivePushToken, map);
+                      }
+                      ReturnUtil.success(promise, null);
+                    }
+                  }
+                });
+              });
+            }
+          }
+        });
+      });
+    } else {
+      ReturnUtil.fail(promise, new PushError(PushErrorCode.REGISTER_ERROR, "PushRegister init failed"));
     }
   }
 

@@ -37,46 +37,38 @@ public class FcmPushRegister extends BasicPushRegister {
 
   @Override
   public void register(Callback callback) {
-    FirebaseMessaging.getInstance()
-      .getToken()
-      .addOnCompleteListener(new OnCompleteListener<String>() {
+    String t = getDeviceToken();
+    if (t == null || t.contentEquals("")) {
+      FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
         @Override
         public void onComplete(@NonNull Task<String> task) {
           if (!task.isSuccessful()) {
             String reason = Objects.requireNonNull(task.getException()).getMessage();
             callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, reason));
-            return;
+          } else {
+            setDeviceToken(task.getResult());
+            callback.invoke(getDeviceToken());
           }
-          setDeviceToken(task.getResult());
-          callback.invoke(getDeviceToken());
-        }
-      })
-      .addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-          String reason = Objects.requireNonNull(e).getMessage();
-          callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, reason));
         }
       });
+    } else {
+      callback.invoke(t);
+    }
   }
 
   @Override
   public void unregister(Callback callback) {
-    FirebaseMessaging.getInstance()
-      .deleteToken()
-      .addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-          String reason = Objects.requireNonNull(e).getMessage();
+    FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
+      @Override
+      public void onComplete(@NonNull Task<Void> task) {
+        if (!task.isSuccessful()) {
+          String reason = Objects.requireNonNull(task.getException()).getMessage();
           callback.invoke(new PushError(PushErrorCode.UNREGISTER_ERROR, reason));
-        }
-      })
-      .addOnCompleteListener(new OnCompleteListener<Void>() {
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
+        } else {
           setDeviceToken(null);
           callback.invoke();
         }
-      });
+      }
+    });
   }
 }

@@ -30,38 +30,43 @@ public class OppoPushRegister extends BasicPushRegister {
       callback.invoke(new PushError(PushErrorCode.NO_SUPPROT_ERROR, "Oppo Push is not supported"));
       return;
     }
-    OppoPushConfig f = (OppoPushConfig)getPushConfig();
-    HeytapPushManager.register(getContext(), f.appKey, f.secret, new ICallBackResultService() {
-      @Override
-      public void onRegister(int responseCode, String registerID, String packageName, String miniPackageName) {
-        if (responseCode == 0) {
-          setDeviceToken(registerID);
-          callback.invoke(getDeviceToken());
-        } else {
-          callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, "Oppo push register error"));
+    String t = getDeviceToken();
+    if (t == null || t.contentEquals("")) {
+      OppoPushConfig f = (OppoPushConfig)getPushConfig();
+      HeytapPushManager.register(getContext(), f.appKey, f.secret, new ICallBackResultService() {
+        @Override
+        public void onRegister(int responseCode, String registerID, String packageName, String miniPackageName) {
+          if (responseCode == 0) {
+            setDeviceToken(registerID);
+            callback.invoke(getDeviceToken());
+          } else {
+            callback.invoke(new PushError(PushErrorCode.REGISTER_ERROR, "Oppo push register error"));
+          }
         }
-      }
 
-      @Override
-      public void onUnRegister(int responseCode, String packageName, String miniProgramPkg) {}
+        @Override
+        public void onUnRegister(int responseCode, String packageName, String miniProgramPkg) {}
 
-      @Override
-      public void onSetPushTime(int i, String s) {}
+        @Override
+        public void onSetPushTime(int i, String s) {}
 
-      @Override
-      public void onGetPushStatus(int i, int i1) {}
+        @Override
+        public void onGetPushStatus(int i, int i1) {}
 
-      @Override
-      public void onGetNotificationStatus(int i, int i1) {}
+        @Override
+        public void onGetNotificationStatus(int i, int i1) {}
 
-      @Override
-      public void onError(int errorCode, String message, String packageName, String miniProgramPkg) {
-        callback.invoke(new PushError(PushErrorCode.fromCode(errorCode),
-                                      "{"
-                                        + "\"code\":" + errorCode + ",\"packageName\":" + packageName +
-                                        "\"miniProgramPkg\":" + miniProgramPkg + "}"));
-      }
-    });
+        @Override
+        public void onError(int errorCode, String message, String packageName, String miniProgramPkg) {
+          callback.invoke(new PushError(PushErrorCode.fromCode(errorCode),
+                                        "{"
+                                          + "\"code\":" + errorCode + ",\"packageName\":" + packageName +
+                                          "\"miniProgramPkg\":" + miniProgramPkg + "}"));
+        }
+      });
+    } else {
+      callback.invoke(t);
+    }
   }
 
   @Override

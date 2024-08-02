@@ -134,6 +134,11 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getTokenFlow(ReadableMap params, Promise promise) {
+    PushClient.getInstance().getTokenFlow(promise);
+  }
+
+  @ReactMethod
   public void addListener(String methodType) {
     // Keep: Required for RN built in Event Emitter Calls.
   }

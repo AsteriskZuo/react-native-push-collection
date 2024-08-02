@@ -101,6 +101,15 @@ RCT_REMAP_METHOD(getToken, getTokenWithResolver
     [ReturnUtil success:resolve withData:ret];
 }
 
+RCT_REMAP_METHOD(getTokenFlow, getTokenFlow
+                 : (NSDictionary *)params withResolver
+                 : (RCTPromiseResolveBlock)resolve withRejecter
+                 : (RCTPromiseRejectBlock)reject) {
+    [ThreadUtil asyncExecute:^{
+      [[PushClient sharedInstance] getTokenFlow:resolve withRejecter:reject];
+    }];
+}
+
 // Don't compile this code when we build for the old architecture.
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

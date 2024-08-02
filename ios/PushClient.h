@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)prepare:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject;
 - (void)registerPush:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject;
 - (void)unregisterPush:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject;
+- (void)getTokenFlow:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;

@@ -156,6 +156,18 @@ export default function App() {
       });
   };
 
+  const onGetTokenAsync = () => {
+    console.log('test:zuoyu:click:onGetTokenAsync');
+    ChatPushClient.getInstance()
+      .getTokenAsync()
+      .then(() => {
+        console.log('test:zuoyu:click:onGetTokenAsync:success');
+      })
+      .catch((e) => {
+        console.log('test:zuoyu:click:onGetTokenAsync:error:', e);
+      });
+  };
+
   React.useEffect(() => {
     init();
     return () => {
@@ -171,6 +183,9 @@ export default function App() {
       </Pressable>
       <Pressable style={styles.button} onPress={onStartRegistration}>
         <Text>{'start Registration'}</Text>
+      </Pressable>
+      <Pressable style={styles.button} onPress={onGetTokenAsync}>
+        <Text>{'get token async'}</Text>
       </Pressable>
       <Pressable style={styles.button} onPress={onStopRegistration}>
         <Text>{'stop Registration'}</Text>
