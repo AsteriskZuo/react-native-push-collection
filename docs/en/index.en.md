@@ -98,10 +98,10 @@ Modify the content of the application's `Podfile` file and add the following con
 target 'PushProjectDemo' do
 # ...
 
-pod 'GoogleUtilities', :modular_headers => true
-pod 'FirebaseAuth', :modular_headers => true
-pod 'FirebaseCore', :modular_headers => true
-pod 'FirebaseMessaging', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseAuth', '>=10.0.0', :modular_headers => true
+  pod 'FirebaseCore', '>=10.0.0', :modular_headers => true
+  pod 'FirebaseMessaging', '>=10.0.0', :modular_headers => true
 
 # ...
 end
