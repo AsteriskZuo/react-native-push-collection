@@ -130,7 +130,7 @@ In the `- (BOOL)application:(UIApplication *)application didFinishLaunchingWithO
 [[PushClient sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 ```
 
-The following code implementation is optional, if not implemented, there is a default call internally.
+**The following code implementation is optional, if not implemented, there is a default call internally.**
 
 In the `- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken` method of `AppDelegate`, add the code:
 
@@ -138,7 +138,7 @@ In the `- (void)application:(UIApplication *)application didRegisterForRemoteNot
 [[PushClient sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 ```
 
-In the `- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error` method of `AppDelegate`, add the code:
+In the `- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error` method of `AppDelegate`, add the code:****
 
 ```objc
 [[PushClient sharedInstance] application:application didFailToRegisterForRemoteNotificationsWithError:error];
