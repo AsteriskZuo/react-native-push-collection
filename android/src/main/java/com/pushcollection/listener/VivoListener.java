@@ -14,6 +14,11 @@ public class VivoListener extends OpenClientPushMessageReceiver {
 
   @Override
   public void onNotificationMessageClicked(Context context, UPSNotificationMessage msg) {
+    PushClient.getInstance().onClickedNotification(ToMapUitl.toMap(msg));
+  }
+
+  @Override
+  public void onForegroundMessageArrived(UPSNotificationMessage msg) {
     PushClient.getInstance().onReceivePushMessage(ToMapUitl.toMap(msg));
   }
 }
