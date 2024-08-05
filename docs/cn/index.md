@@ -303,12 +303,15 @@ export default function App() {
       // todo: 通过 `getDeviceType()` 方法自动获取当前类型。具体详见源码
       pushType = (getDeviceType() ?? 'unknown') as PushType;
     }
+
+    // todo: 1. init
     ChatPushClient.getInstance()
       .init({
         platform: getPlatform(),
         pushType: pushType as any,
       })
       .then(() => {
+        // todo: 2. add listener
         ChatPushClient.getInstance().addListener({
           onError: (error) => {
             ToastAndroid.show(
@@ -331,6 +334,7 @@ export default function App() {
   }, []);
 
   const onGetTokenAsync = () => {
+    // todo: 3. get token with `onReceivePushToken`
     ChatPushClient.getInstance()
       .getTokenAsync()
       .then(() => {

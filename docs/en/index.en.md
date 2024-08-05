@@ -308,12 +308,14 @@ export default function App() {
       // todo: Automatically get the current type through the `getDeviceType()` method. See source code for details.
       pushType = (getDeviceType() ?? 'unknown') as PushType;
     }
+    // todo: 1. init
     ChatPushClient.getInstance()
       .init({
         platform: getPlatform(),
         pushType: pushType as any,
       })
       .then(() => {
+        // todo: 2. add listener
         ChatPushClient.getInstance().addListener({
           onError: (error) => {
             ToastAndroid.show(
@@ -336,6 +338,7 @@ export default function App() {
   }, []);
 
   const onGetTokenAsync = () => {
+    // todo: 3. get token with `onReceivePushToken`
     ChatPushClient.getInstance()
       .getTokenAsync()
       .then(() => {
