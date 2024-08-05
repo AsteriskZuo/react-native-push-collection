@@ -34,13 +34,6 @@ export default function App() {
       .then(() => {
         console.log('test:zuoyu:init:addListener');
         ChatPushClient.getInstance().addListener({
-          onAppBackground: (params) => {
-            console.log('test:zuoyu:onAppBackground:', params);
-            ToastAndroid.show(
-              'onAppBackground' + JSON.stringify(params),
-              ToastAndroid.SHORT
-            );
-          },
           onClickNotification: (message) => {
             console.log('test:zuoyu:onClickNotification:', message);
             ToastAndroid.show(
@@ -52,13 +45,6 @@ export default function App() {
             console.log('test:zuoyu:onError:', error);
             ToastAndroid.show(
               'onError' + JSON.stringify(error),
-              ToastAndroid.SHORT
-            );
-          },
-          onAppForeground: (params) => {
-            console.log('test:zuoyu:onAppForeground:', params);
-            ToastAndroid.show(
-              'onAppForeground' + JSON.stringify(params),
               ToastAndroid.SHORT
             );
           },

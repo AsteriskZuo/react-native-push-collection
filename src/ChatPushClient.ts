@@ -6,8 +6,6 @@ import {
 import type { PushConfig } from './ChatPushConfig';
 import type { ChatPushListener } from './ChatPushListener';
 import {
-  _onAppBackground,
-  _onAppForeground,
   _onError,
   _onNativeNotification,
   _onNotificationClick,
@@ -98,10 +96,6 @@ export class ChatPushClient {
         listener.onReceivePushMessage?.(params.message);
       } else if (eventType === _onNotificationClick) {
         listener.onClickNotification?.(params.message);
-      } else if (eventType === _onAppBackground) {
-        listener.onAppBackground?.(params);
-      } else if (eventType === _onAppForeground) {
-        listener.onAppForeground?.(params);
       } else if (eventType === _onError) {
         listener.onError?.(params.error);
       }
@@ -161,7 +155,7 @@ export class ChatPushClient {
   }
 
   /**
-   * Get the push token.
+   * Get token asynchronously through {@link ChatPushListener.onReceivePushToken}.
    *
    * It is a collection of {@link prepare}, {@link registerPush} and {@link getToken} interfaces.
    *

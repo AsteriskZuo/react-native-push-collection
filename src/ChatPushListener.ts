@@ -32,16 +32,6 @@ export interface ChatPushListener {
    */
   onClickNotification?(message: any): void;
   /**
-   * Callback for when the app enters the background.
-   * @param params The params.
-   */
-  onAppBackground?(params: any): void;
-  /**
-   * Callback for when the app enters the foreground.
-   * @param params The params.
-   */
-  onAppForeground?(params: any): void;
-  /**
    * Callback for when an error occurs.
    * @param error The error that occurred.
    */
