@@ -162,9 +162,14 @@ export default function App() {
       .getTokenAsync()
       .then(() => {
         console.log('test:zuoyu:click:onGetTokenAsync:success');
+        ToastAndroid.show('get token success', ToastAndroid.SHORT);
       })
       .catch((e) => {
         console.log('test:zuoyu:click:onGetTokenAsync:error:', e);
+        ToastAndroid.show(
+          'get token error:' + e.toString(),
+          ToastAndroid.SHORT
+        );
       });
   };
 

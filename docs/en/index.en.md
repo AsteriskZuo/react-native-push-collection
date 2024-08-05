@@ -8,7 +8,7 @@
       - [Configure the project](#configure-the-project)
         - [apns](#apns-1)
         - [fcm](#fcm-1)
-      - [Write code](#write-code)
+      - [Write native code (ios)](#write-native-code-ios)
     - [android platform](#android-platform)
       - [Download necessary certificate files](#download-necessary-certificate-files-1)
         - [fcm](#fcm-2)
@@ -19,7 +19,8 @@
         - [vivo](#vivo)
         - [xiaomi](#xiaomi)
       - [Configure the project](#configure-the-project-1)
-      - [Write code](#write-code-1)
+      - [Write native code (android)](#write-native-code-android)
+    - [write quick start code (typescript)](#write-quick-start-code-typescript)
   - [Notes](#notes)
   - [Add manufacturers](#add-manufacturers)
   - [FAQ](#faq)
@@ -44,6 +45,7 @@ The main steps include:
 Common project creation is as follows:
 
 ```sh
+# Specify common version numbers to reduce storage and unknown issues.
 npx react-native@latest init --version 0.73.2 PushProjectDemo
 ```
 
@@ -110,7 +112,7 @@ end
 ![1](../res/fcm-add-file-to-project.png)
 ![2](../res/fcm-add-push-option.png)
 
-#### Write code
+#### Write native code (ios)
 
 Here is the translation of your provided instructions into English:
 
@@ -138,7 +140,7 @@ In the `- (void)application:(UIApplication *)application didRegisterForRemoteNot
 [[PushClient sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 ```
 
-In the `- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error` method of `AppDelegate`, add the code:****
+In the `- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error` method of `AppDelegate`, add the code:\*\*\*\*
 
 ```objc
 [[PushClient sharedInstance] application:application didFailToRegisterForRemoteNotificationsWithError:error];
@@ -262,7 +264,7 @@ HUAWEI_PUSH_APPID=xxx
 
 **Note** The configuration will generate the corresponding file when synchronizing the project to complete the static configuration.
 
-#### Write code
+#### Write native code (android)
 
 In the `MainApplication` file, add the following code in the method `onCreate`:
 
@@ -277,6 +279,95 @@ registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
     android:name=".MainApplication">
 </application>
 ```
+
+### write quick start code (typescript)
+
+```tsx
+import * as React from 'react';
+
+import { View, Text, Pressable, ToastAndroid } from 'react-native';
+import {
+  ChatPushClient,
+  getPlatform,
+  getDeviceType,
+  type PushType,
+  type ChatPushListener,
+} from 'react-native-push-collection';
+
+export default function App() {
+  const [result, setResult] = React.useState<number | undefined>();
+
+  const init = React.useCallback(() => {
+    // todo: Get the current device platform `ios` or `android`
+    const platform = getPlatform();
+    let pushType: PushType;
+    if (platform === 'ios') {
+      // todo: Can be set to `fcm` or `apns`
+      pushType = 'fcm';
+    } else {
+      // todo: Automatically get the current type through the `getDeviceType()` method. See source code for details.
+      pushType = (getDeviceType() ?? 'unknown') as PushType;
+    }
+    ChatPushClient.getInstance()
+      .init({
+        platform: getPlatform(),
+        pushType: pushType as any,
+      })
+      .then(() => {
+        ChatPushClient.getInstance().addListener({
+          onError: (error) => {
+            ToastAndroid.show(
+              'onError' + JSON.stringify(error),
+              ToastAndroid.SHORT
+            );
+          },
+          onReceivePushToken: (token) => {
+            ToastAndroid.show('onReceivePushToken' + token, ToastAndroid.SHORT);
+          },
+        } as ChatPushListener);
+      })
+      .catch((e) => {
+        ToastAndroid.show('init error:' + e.toString(), ToastAndroid.SHORT);
+      });
+  }, []);
+
+  const uninit = React.useCallback(() => {
+    ChatPushClient.getInstance().clearListener();
+  }, []);
+
+  const onGetTokenAsync = () => {
+    ChatPushClient.getInstance()
+      .getTokenAsync()
+      .then(() => {
+        ToastAndroid.show('get token success', ToastAndroid.SHORT);
+      })
+      .catch((e) => {
+        ToastAndroid.show(
+          'get token error:' + e.toString(),
+          ToastAndroid.SHORT
+        );
+      });
+  };
+
+  React.useEffect(() => {
+    init();
+    return () => {
+      uninit();
+    };
+  }, [init, uninit]);
+
+  return (
+    <View>
+      <Text>Result: {result}</Text>
+      <Pressable onPress={onGetTokenAsync}>
+        <Text>{'get token async'}</Text>
+      </Pressable>
+    </View>
+  );
+}
+```
+
+[full code source](https://github.com/AsteriskZuo/react-native-push-collection/blob/main/example/src/App.tsx)
 
 ## Notes
 

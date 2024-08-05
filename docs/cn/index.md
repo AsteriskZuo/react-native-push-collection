@@ -1,15 +1,15 @@
 - [详细说明](#详细说明)
   - [快速集成](#快速集成)
     - [创建项目](#创建项目)
-    - [ios 平台](#ios-平台)
+    - [ios 平台设置](#ios-平台设置)
       - [下载必要证书文件](#下载必要证书文件)
         - [apns](#apns)
         - [fcm](#fcm)
       - [配置工程](#配置工程)
         - [apns](#apns-1)
         - [fcm](#fcm-1)
-      - [编写代码](#编写代码)
-    - [android 平台](#android-平台)
+      - [编写原生部分代码(ios)](#编写原生部分代码ios)
+    - [android 平台设置](#android-平台设置)
       - [下载必要证书文件](#下载必要证书文件-1)
         - [fcm](#fcm-2)
         - [huawei](#huawei)
@@ -19,7 +19,8 @@
         - [vivo](#vivo)
         - [xiaomi](#xiaomi)
       - [配置工程](#配置工程-1)
-      - [编写代码](#编写代码-1)
+      - [编写原生部分代码(android)](#编写原生部分代码android)
+    - [编写快速开始代码](#编写快速开始代码)
   - [注意事项](#注意事项)
   - [添加厂商](#添加厂商)
   - [常见问题](#常见问题)
@@ -42,6 +43,7 @@
 常见创建项目如下：
 
 ```sh
+# 指定常用版本号，减少存储，并且减少未知问题。
 npx react-native@latest init --version 0.73.2 PushProjectDemo
 ```
 
@@ -53,7 +55,7 @@ yarn add react-native-push-collection
 
 **注意** 假设 创建的项目名为 `PushProjectDemo`
 
-### ios 平台
+### ios 平台设置
 
 ios 平台，用户可以选择使用 apns 或者 fcm 之一。在初始化的时候指定选择，不支持动态切换。
 
@@ -108,7 +110,7 @@ end
 ![1](../res/fcm-add-file-to-project.png)
 ![2](../res/fcm-add-push-option.png)
 
-#### 编写代码
+#### 编写原生部分代码(ios)
 
 以 `objc` 版本为例。
 
@@ -146,7 +148,7 @@ end
 [[PushClient sharedInstance] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 ```
 
-### android 平台
+### android 平台设置
 
 android 平台，用户可以选择 手机厂商 或者 fcm 之一。不支持动态切换。
 
@@ -257,7 +259,7 @@ HUAWEI_PUSH_APPID=xxx
 
 **注意** 配置会在同步项目的时候生成对应文件，完成静态配置。
 
-#### 编写代码
+#### 编写原生部分代码(android)
 
 在 `MainApplication` 文件中，在方法 `onCreate`中添加如下代码：
 
@@ -272,6 +274,95 @@ registerActivityLifecycleCallbacks(new PushActivityLifecycleCallbacks());
       android:name=".MainApplication">
   </application>
 ```
+
+### 编写快速开始代码
+
+```tsx
+import * as React from 'react';
+
+import { View, Text, Pressable, ToastAndroid } from 'react-native';
+import {
+  ChatPushClient,
+  getPlatform,
+  getDeviceType,
+  type PushType,
+  type ChatPushListener,
+} from 'react-native-push-collection';
+
+export default function App() {
+  const [result, setResult] = React.useState<number | undefined>();
+
+  const init = React.useCallback(() => {
+    // todo: 获取当前设备平台 `ios` 或者 `android`
+    const platform = getPlatform();
+    let pushType: PushType;
+    if (platform === 'ios') {
+      // todo: 可以设置为 `fcm` 或者 `apns`
+      pushType = 'fcm';
+    } else {
+      // todo: 通过 `getDeviceType()` 方法自动获取当前类型。具体详见源码
+      pushType = (getDeviceType() ?? 'unknown') as PushType;
+    }
+    ChatPushClient.getInstance()
+      .init({
+        platform: getPlatform(),
+        pushType: pushType as any,
+      })
+      .then(() => {
+        ChatPushClient.getInstance().addListener({
+          onError: (error) => {
+            ToastAndroid.show(
+              'onError' + JSON.stringify(error),
+              ToastAndroid.SHORT
+            );
+          },
+          onReceivePushToken: (token) => {
+            ToastAndroid.show('onReceivePushToken' + token, ToastAndroid.SHORT);
+          },
+        } as ChatPushListener);
+      })
+      .catch((e) => {
+        ToastAndroid.show('init error:' + e.toString(), ToastAndroid.SHORT);
+      });
+  }, []);
+
+  const uninit = React.useCallback(() => {
+    ChatPushClient.getInstance().clearListener();
+  }, []);
+
+  const onGetTokenAsync = () => {
+    ChatPushClient.getInstance()
+      .getTokenAsync()
+      .then(() => {
+        ToastAndroid.show('get token success', ToastAndroid.SHORT);
+      })
+      .catch((e) => {
+        ToastAndroid.show(
+          'get token error:' + e.toString(),
+          ToastAndroid.SHORT
+        );
+      });
+  };
+
+  React.useEffect(() => {
+    init();
+    return () => {
+      uninit();
+    };
+  }, [init, uninit]);
+
+  return (
+    <View>
+      <Text>Result: {result}</Text>
+      <Pressable onPress={onGetTokenAsync}>
+        <Text>{'get token async'}</Text>
+      </Pressable>
+    </View>
+  );
+}
+```
+
+[完整源码地址](https://github.com/AsteriskZuo/react-native-push-collection/blob/main/example/src/App.tsx)
 
 ## 注意事项
 
