@@ -13,6 +13,7 @@ import {
   _onReceivePushToken,
 } from './__internal__/const';
 import type { InitOptions } from './types';
+import { createError, tryCatch } from './ChatPushError';
 
 export function multiply(a: number, b: number): Promise<number> {
   return PushCollection.multiply(a, b);
@@ -70,6 +71,8 @@ export class ChatPushClient {
    * The manufacturer configuration object and registration object will be generated. If the initialization fails, an exception will be thrown.
    *
    * **Notes** `init` must be called before calling other APIs.
+   *
+   * @throws {@link ChatPushError}
    */
   public init(option: InitOptions): Promise<void> {
     this._nativeSubs.forEach((sub) => sub.remove());
@@ -81,10 +84,12 @@ export class ChatPushClient {
         (params: any) => this._onNativeNotification(params)
       )
     );
-    return PushCollection.init({
-      ...option,
-      pushType: option.pushType ?? 'unknown',
-    });
+    return tryCatch(
+      PushCollection.init({
+        ...option,
+        pushType: option.pushType ?? 'unknown',
+      })
+    );
   }
 
   protected _onNativeNotification(params: any): void {
@@ -97,7 +102,7 @@ export class ChatPushClient {
       } else if (eventType === _onNotificationClick) {
         listener.onClickNotification?.(params.message);
       } else if (eventType === _onError) {
-        listener.onError?.(params.error);
+        listener.onError?.(createError(params.error));
       }
     });
   }
@@ -108,7 +113,7 @@ export class ChatPushClient {
    * **Notes** The order in which `registerPush` and `prepare` are called does not matter.
    */
   public prepare(): Promise<void> {
-    return PushCollection.prepare({});
+    return tryCatch(PushCollection.prepare({}));
   }
 
   /**
@@ -118,18 +123,21 @@ export class ChatPushClient {
    *
    * **Note** Returning the result does not mean that the token can be obtained normally. You need to use the listener `ChatPushListener.onReceivePushToken` to obtain the result. If the listener has received the result, you can obtain the token through `getToken`.
    *
+   * @throws {@link ChatPushError}
    */
   public registerPush(): Promise<void> {
-    return PushCollection.registerPush({});
+    return tryCatch(PushCollection.registerPush({}));
   }
 
   /**
    * Unregister push notification service.
    *
    * **Note** After unregisterPush, you will not be able to obtain a token using `getToken`.
+   *
+   * @throws {@link ChatPushError}
    */
   public unregisterPush(): Promise<void> {
-    return PushCollection.unregisterPush();
+    return tryCatch(PushCollection.unregisterPush());
   }
 
   /**
@@ -140,7 +148,7 @@ export class ChatPushClient {
    * @returns The configuration of the push notification service.
    */
   public getPushConfig(): Promise<PushConfig | undefined> {
-    return PushCollection.getPushConfig();
+    return tryCatch(PushCollection.getPushConfig());
   }
 
   /**
@@ -149,9 +157,11 @@ export class ChatPushClient {
    * **Notes** Only when the registration is successful or has been successfully registered can you obtain the `token` normally.
    *
    * @returns The push token.
+   *
+   * @throws {@link ChatPushError}
    */
   public getToken(): Promise<string | undefined> {
-    return PushCollection.getToken();
+    return tryCatch(PushCollection.getToken());
   }
 
   /**
@@ -159,9 +169,9 @@ export class ChatPushClient {
    *
    * It is a collection of {@link prepare}, {@link registerPush} and {@link getToken} interfaces.
    *
-   * @returns If an error occurs, an exception object is thrown.
+   * @throws {@link ChatPushError}
    */
   public getTokenAsync(): Promise<void> {
-    return PushCollection.getTokenFlow({});
+    return tryCatch(PushCollection.getTokenFlow({}));
   }
 }

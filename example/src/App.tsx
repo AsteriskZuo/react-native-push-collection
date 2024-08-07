@@ -63,7 +63,10 @@ export default function App() {
       })
       .catch((e) => {
         console.warn('test:zuoyu:init:error:', e);
-        ToastAndroid.show('init error:' + e.toString(), ToastAndroid.SHORT);
+        ToastAndroid.show(
+          'init error:' + JSON.stringify(e),
+          ToastAndroid.SHORT
+        );
       });
   }, []);
 
@@ -81,7 +84,10 @@ export default function App() {
       })
       .catch((e) => {
         console.warn('test:zuoyu:prepare', e);
-        ToastAndroid.show('prepare error:' + e.toString(), ToastAndroid.SHORT);
+        ToastAndroid.show(
+          'prepare error:' + JSON.stringify(e),
+          ToastAndroid.SHORT
+        );
       });
   };
 
@@ -100,7 +106,7 @@ export default function App() {
             .catch((e) => {
               console.warn('test:zuoyu:getToken:error:', e);
               ToastAndroid.show(
-                'getToken error:' + e.toString(),
+                'getToken error:' + JSON.stringify(e),
                 ToastAndroid.SHORT
               );
             });
@@ -109,7 +115,7 @@ export default function App() {
       .catch((e) => {
         console.warn('test:zuoyu:registerPush:error:', e);
         ToastAndroid.show(
-          'registerPush error:' + e.toString(),
+          'registerPush error:' + JSON.stringify(e),
           ToastAndroid.SHORT
         );
       });
@@ -128,7 +134,7 @@ export default function App() {
           .catch((e) => {
             console.warn('test:zuoyu:getToken:error:', e);
             ToastAndroid.show(
-              'getToken error:' + e.toString(),
+              'getToken error:' + JSON.stringify(e),
               ToastAndroid.SHORT
             );
           });
@@ -136,7 +142,7 @@ export default function App() {
       .catch((e) => {
         console.warn('test:zuoyu:unregisterPush:error:', e);
         ToastAndroid.show(
-          'unregisterPush error:' + e.toString(),
+          'unregisterPush error:' + JSON.stringify(e),
           ToastAndroid.SHORT
         );
       });
@@ -153,7 +159,7 @@ export default function App() {
       .catch((e) => {
         console.log('test:zuoyu:click:onGetTokenAsync:error:', e);
         ToastAndroid.show(
-          'get token error:' + e.toString(),
+          'get token error:' + JSON.stringify(e),
           ToastAndroid.SHORT
         );
       });

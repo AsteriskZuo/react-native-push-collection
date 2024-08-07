@@ -73,7 +73,10 @@ static NSString *const TAG = @"PushClient";
     } else if ([pushType isEqual:PushTypeAPNS]) {
         _config = [[ApnsPushConfig alloc] init];
     } else {
-        [ReturnUtil fail:reject withCode:PushErrorCodeParam withMessage:[PushErrorHelper getDomain:PushErrorCodeParam]];
+        [ReturnUtil fail:reject
+               withError:[PushErrorHelper createError:PushErrorCodeParam
+                                           withDomain:[PushErrorHelper getDomain:PushErrorCodeParam]
+                                         withUserInfo:nil]];
         return;
     }
     [ReturnUtil success:resolve withData:nil];
@@ -101,7 +104,13 @@ static NSString *const TAG = @"PushClient";
         __weak typeof(self) weakSelf = self;
         [[FIRMessaging messaging] tokenWithCompletion:^(NSString *token, NSError *error) {
           if (error != nil) {
-              [ReturnUtil fail:reject withError:error];
+              [ReturnUtil fail:reject
+                     withError:[PushErrorHelper createError:error.code
+                                                 withDomain:error.domain
+                                               withUserInfo:@{
+                                                   @"code" : @(PushErrorCodeRegister),
+                                                   @"message" : [PushErrorHelper getDomain:PushErrorCodeRegister]
+                                               }]];
           } else {
               [weakSelf setPushToken:token];
               [ReturnUtil success:resolve withData:token];
@@ -121,7 +130,13 @@ static NSString *const TAG = @"PushClient";
         __weak typeof(self) weakSelf = self;
         [[FIRMessaging messaging] deleteTokenWithCompletion:^(NSError *_Nullable error) {
           if (error != nil) {
-              [ReturnUtil fail:reject withError:error];
+              [ReturnUtil fail:reject
+                     withError:[PushErrorHelper createError:error.code
+                                                 withDomain:error.domain
+                                               withUserInfo:@{
+                                                   @"code" : @(PushErrorCodeUnRegister),
+                                                   @"message" : [PushErrorHelper getDomain:PushErrorCodeUnRegister]
+                                               }]];
           } else {
               [weakSelf setPushToken:nil];
               [ReturnUtil success:resolve withData:nil];
@@ -204,7 +219,13 @@ static NSString *const TAG = @"PushClient";
                       completionHandler:^(BOOL granted, NSError *_Nullable error) {
                         if (error != nil) {
                             NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-                            map[@"error"] = [error userInfo];
+                            NSError* myError = [PushErrorHelper createError:error.code
+                                                                withDomain:error.domain
+                                                              withUserInfo:@{
+                                                                  @"code" : @(PushErrorCodePrepare),
+                                                                  @"message" : [PushErrorHelper getDomain:PushErrorCodePrepare]
+                                                              }];
+                            map[@"error"] = [ToMapUtil toMap:myError];
                             [self sendEvent:onError withData:map];
                         }
                       }];

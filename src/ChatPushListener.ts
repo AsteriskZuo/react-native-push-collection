@@ -1,3 +1,5 @@
+import type { ChatPushError } from './ChatPushError';
+
 /**
  * Interface for listening to push events.
  */
@@ -35,5 +37,5 @@ export interface ChatPushListener {
    * Callback for when an error occurs.
    * @param error The error that occurred.
    */
-  onError?(error: any): void;
+  onError?(error: ChatPushError): void;
 }

@@ -1,6 +1,7 @@
 #import "PushCollection.h"
 #import "Const.h"
 #import "PushClient.h"
+#import "PushError.h"
 #import "PushType.h"
 #import "ReturnUtil.h"
 #import "ThreadUtil.h"
@@ -42,21 +43,21 @@ RCT_REMAP_METHOD(init, init
 
     if (platform == nil) {
         [ReturnUtil fail:reject
-               withError:[NSError errorWithDomain:NSCocoaErrorDomain
-                                             code:commonError
-                                         userInfo:@{NSLocalizedDescriptionKey : @"Platform is required"}]];
+               withError:[PushErrorHelper createError:PushErrorCodeParam
+                                           withDomain:[PushErrorHelper getDomain:PushErrorCodeParam]
+                                         withUserInfo:nil]];
     }
     if (![platform isEqual:@"ios"]) {
         [ReturnUtil fail:reject
-               withError:[NSError errorWithDomain:NSCocoaErrorDomain
-                                             code:commonError
-                                         userInfo:@{NSLocalizedDescriptionKey : @"Platform is not supported"}]];
+               withError:[PushErrorHelper createError:PushErrorCodeNoSupport
+                                           withDomain:[PushErrorHelper getDomain:PushErrorCodeNoSupport]
+                                         withUserInfo:nil]];
     }
     if (![pushType isEqual:PushTypeFCM] && ![pushType isEqual:PushTypeAPNS]) {
         [ReturnUtil fail:reject
-               withError:[NSError errorWithDomain:NSCocoaErrorDomain
-                                             code:commonError
-                                         userInfo:@{NSLocalizedDescriptionKey : @"Device type is not supported"}]];
+               withError:[PushErrorHelper createError:PushErrorCodeNoSupport
+                                           withDomain:[PushErrorHelper getDomain:PushErrorCodeNoSupport]
+                                         withUserInfo:nil]];
     }
     [ThreadUtil asyncExecute:^{
       [[PushClient sharedInstance] init:pushType withResolver:resolve withRejecter:reject];

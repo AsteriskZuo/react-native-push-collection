@@ -17,13 +17,19 @@ typedef NS_ENUM(NSInteger, PushErrorCode) {
     PushErrorCodeRegister = 5,
     PushErrorCodeUnRegister = 6,
     PushErrorCodePrepare = 7,
-    PushErrorCodeUnkown = 1000
+    PushErrorCodeUnknown = 1000
 };
 
 @interface PushErrorHelper : NSObject
 
 + (NSErrorDomain)getDomain:(PushErrorCode)code;
-+ (NSError *)createError:(PushErrorCode)code withDomain:(NSErrorDomain)domain;
++ (NSError *)createError:(PushErrorCode)code
+              withDomain:(NSErrorDomain)domain
+            withUserInfo:(nullable NSDictionary<NSErrorUserInfoKey, id> *)userInfo;
+
+@end
+
+@interface NSError (map)
 
 @end
 

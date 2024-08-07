@@ -33,7 +33,7 @@
     case PushErrorCodePrepare:
         ret = @"prepare error";
         break;
-    case PushErrorCodeUnkown:
+    case PushErrorCodeUnknown:
         ret = @"unkown error";
         break;
 
@@ -43,8 +43,26 @@
     }
     return ret;
 }
-+ (NSError *)createError:(PushErrorCode)code withDomain:(NSErrorDomain)domain {
-    return [NSError errorWithDomain:domain code:code userInfo:nil];
++ (NSError *)createError:(PushErrorCode)code
+              withDomain:(NSErrorDomain)domain
+            withUserInfo:(nullable NSDictionary<NSErrorUserInfoKey, id> *)userInfo {
+    if (userInfo == nil) {
+        return [NSError errorWithDomain:domain code:code userInfo:@{@"code" : @(code), @"message" : domain}];
+    }
+    return [NSError errorWithDomain:domain code:code userInfo:userInfo];
+}
+
+@end
+
+@implementation NSError (map)
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary* ret = [NSMutableDictionary dictionary];
+    NSMutableDictionary* sub = [NSMutableDictionary dictionary];
+    sub[@"code"] = @(self.code);
+    sub[@"message"] = self.domain;
+    ret[@"userInfo"] = sub;
+    return ret;
 }
 
 @end

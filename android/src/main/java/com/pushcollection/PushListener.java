@@ -9,5 +9,5 @@ public interface PushListener {
   void onClickedNotification(Map<?, ?> message);
   void onAppForeground();
   void onAppBackground();
-  void onError(Throwable message);
+  void onError(PushError message);
 }

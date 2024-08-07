@@ -6,6 +6,7 @@
 //
 
 #import "ReturnUtil.h"
+#import "PushError.h"
 #import "ThreadUtil.h"
 
 @implementation ReturnUtil
@@ -17,6 +18,8 @@
       } else if ([data isKindOfClass:[NSMutableDictionary class]]) {
           [eventEmitter sendEventWithName:methodType body:data];
       } else if ([data isKindOfClass:[NSString class]]) {
+          [eventEmitter sendEventWithName:methodType body:data];
+      } else if ([data isKindOfClass:[NSError class]]) {
           [eventEmitter sendEventWithName:methodType body:data];
       } else {
           [eventEmitter sendEventWithName:methodType body:nil];
@@ -40,9 +43,6 @@
     [ThreadUtil mainThreadExecute:^{
       reject([NSString stringWithFormat:@"%ld", (long)error.code], error.domain, error);
     }];
-}
-+ (void)fail:(RCTPromiseRejectBlock)reject withCode:(NSInteger)code withMessage:(NSErrorDomain _Nonnull)domain {
-    [self fail:reject withError:[NSError errorWithDomain:domain code:code userInfo:nil]];
 }
 
 @end

@@ -235,9 +235,9 @@ public class PushClient implements PushListener {
   }
 
   @Override
-  public void onError(Throwable message) {
+  public void onError(PushError message) {
     HashMap<String, Object> map = new HashMap<>();
-    map.put("error", message);
+    map.put("error", ToJsonUtil.toJson(message.toMap()));
     this.sendEvent(Const.onError, map);
   }
 }

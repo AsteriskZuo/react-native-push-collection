@@ -1,7 +1,5 @@
 package com.pushcollection;
 
-import org.jetbrains.annotations.Contract;
-
 public enum PushErrorCode {
   PARAM_ERROR(1),
   NO_SUPPROT_ERROR(2),
