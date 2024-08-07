@@ -219,12 +219,13 @@ static NSString *const TAG = @"PushClient";
                       completionHandler:^(BOOL granted, NSError *_Nullable error) {
                         if (error != nil) {
                             NSMutableDictionary *map = [NSMutableDictionary dictionaryWithCapacity:2];
-                            NSError* myError = [PushErrorHelper createError:error.code
-                                                                withDomain:error.domain
-                                                              withUserInfo:@{
-                                                                  @"code" : @(PushErrorCodePrepare),
-                                                                  @"message" : [PushErrorHelper getDomain:PushErrorCodePrepare]
-                                                              }];
+                            NSError *myError =
+                                [PushErrorHelper createError:error.code
+                                                  withDomain:error.domain
+                                                withUserInfo:@{
+                                                    @"code" : @(PushErrorCodePrepare),
+                                                    @"message" : [PushErrorHelper getDomain:PushErrorCodePrepare]
+                                                }];
                             map[@"error"] = [ToMapUtil toMap:myError];
                             [self sendEvent:onError withData:map];
                         }
@@ -259,7 +260,8 @@ static NSString *const TAG = @"PushClient";
 }
 
 - (NSString *)stringWithDeviceToken:(NSData *)deviceToken {
-    return [deviceToken base64EncodedStringWithOptions:0];
+    return [self _extractTokenFromRawData:deviceToken];
+    //    return [deviceToken base64EncodedStringWithOptions:0];
     //    const char *data = [deviceToken bytes];
     //    NSMutableString *token = [NSMutableString string];
     //
@@ -268,6 +270,36 @@ static NSString *const TAG = @"PushClient";
     //    }
     //
     //    return [token copy];
+}
+
+- (NSString *)_extractTokenFromRawData:(NSData *)deviceToken {
+    NSString *token = @"";
+    do {
+        if (@available(iOS 13.0, *)) {
+            if ([deviceToken isKindOfClass:[NSData class]]) {
+                const unsigned *tokenBytes = (const unsigned *)[deviceToken bytes];
+                token = [NSString stringWithFormat:@"%08x%08x%08x%08x%08x%08x%08x%08x", ntohl(tokenBytes[0]),
+                                                   ntohl(tokenBytes[1]), ntohl(tokenBytes[2]), ntohl(tokenBytes[3]),
+                                                   ntohl(tokenBytes[4]), ntohl(tokenBytes[5]), ntohl(tokenBytes[6]),
+                                                   ntohl(tokenBytes[7])];
+                break;
+            } else if ([deviceToken isKindOfClass:[NSString class]]) {
+                token = [NSString stringWithFormat:@"%@", deviceToken];
+                token = [token stringByReplacingOccurrencesOfString:@"<" withString:@""];
+                token = [token stringByReplacingOccurrencesOfString:@">" withString:@""];
+                token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
+                break;
+            }
+        } else {
+            token = [NSString stringWithFormat:@"%@", deviceToken];
+            token = [token stringByReplacingOccurrencesOfString:@"<" withString:@""];
+            token = [token stringByReplacingOccurrencesOfString:@">" withString:@""];
+            token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
+            break;
+        }
+    } while (0);
+
+    return token;
 }
 
 - (void)test1:(NSData *)deviceTokenData {
