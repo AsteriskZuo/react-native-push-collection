@@ -8,8 +8,6 @@ import type { ChatPushListener } from './ChatPushListener';
 import {
   _onError,
   _onNativeNotification,
-  _onNotificationClick,
-  _onReceivePushMessage,
   _onReceivePushToken,
 } from './__internal__/const';
 import type { InitOptions } from './types';
@@ -97,10 +95,6 @@ export class ChatPushClient {
       const eventType = params.type;
       if (eventType === _onReceivePushToken) {
         listener.onReceivePushToken?.(params.token);
-      } else if (eventType === _onReceivePushMessage) {
-        listener.onReceivePushMessage?.(params.message);
-      } else if (eventType === _onNotificationClick) {
-        listener.onClickNotification?.(params.message);
       } else if (eventType === _onError) {
         listener.onError?.(createError(params.error));
       }

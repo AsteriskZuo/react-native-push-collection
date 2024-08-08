@@ -34,24 +34,10 @@ export default function App() {
       .then(() => {
         console.log('test:zuoyu:init:addListener');
         ChatPushClient.getInstance().addListener({
-          onClickNotification: (message) => {
-            console.log('test:zuoyu:onClickNotification:', message);
-            ToastAndroid.show(
-              'onClickNotification' + JSON.stringify(message),
-              ToastAndroid.SHORT
-            );
-          },
           onError: (error) => {
             console.log('test:zuoyu:onError:', error);
             ToastAndroid.show(
               'onError' + JSON.stringify(error),
-              ToastAndroid.SHORT
-            );
-          },
-          onReceivePushMessage: (message) => {
-            console.log('test:zuoyu:onReceivePushMessage:', message);
-            ToastAndroid.show(
-              'onReceivePushMessage' + JSON.stringify(message),
               ToastAndroid.SHORT
             );
           },
