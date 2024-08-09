@@ -35,7 +35,7 @@ export default function App() {
         console.log('test:zuoyu:init:addListener');
         ChatPushClient.getInstance().addListener({
           onError: (error) => {
-            console.log('test:zuoyu:onError:', error);
+            console.warn('test:zuoyu:onError:', error);
             ToastAndroid.show(
               'onError' + JSON.stringify(error),
               ToastAndroid.SHORT
@@ -143,7 +143,7 @@ export default function App() {
         ToastAndroid.show('get token success', ToastAndroid.SHORT);
       })
       .catch((e) => {
-        console.log('test:zuoyu:click:onGetTokenAsync:error:', e);
+        console.warn('test:zuoyu:click:onGetTokenAsync:error:', e);
         ToastAndroid.show(
           'get token error:' + JSON.stringify(e),
           ToastAndroid.SHORT
