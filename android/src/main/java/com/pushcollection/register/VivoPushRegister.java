@@ -25,6 +25,8 @@ public class VivoPushRegister extends BasicPushRegister {
 
   @Override
   public void prepare(Callback callback) {
+    callback.invoke();
+    return; // !!! 1003 vivo is error.  ref: https://dev.vivo.com.cn/documentCenter/doc/614
     PushClient.getInstance(getContext()).turnOnPush(new com.vivo.push.IPushActionListener() {
       @Override
       public void onStateChanged(int state) {
