@@ -27,17 +27,17 @@ public class VivoPushRegister extends BasicPushRegister {
   public void prepare(Callback callback) {
     callback.invoke();
     return; // !!! 1003 vivo is error.  ref: https://dev.vivo.com.cn/documentCenter/doc/614
-    PushClient.getInstance(getContext()).turnOnPush(new com.vivo.push.IPushActionListener() {
-      @Override
-      public void onStateChanged(int state) {
-        if (state != 0) {
-          // !!! 1003 vivo is error.  ref: https://dev.vivo.com.cn/documentCenter/doc/614
-          callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Vivo turn on is failed." + state));
-          return;
-        }
-        callback.invoke();
-      }
-    });
+            //    PushClient.getInstance(getContext()).turnOnPush(new com.vivo.push.IPushActionListener() {
+            //      @Override
+            //      public void onStateChanged(int state) {
+            //        if (state != 0) {
+            //          // !!! 1003 vivo is error.  ref: https://dev.vivo.com.cn/documentCenter/doc/614
+            //          callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Vivo turn on is failed." + state));
+            //          return;
+            //        }
+            //        callback.invoke();
+            //      }
+            //    });
   }
 
   @Override
