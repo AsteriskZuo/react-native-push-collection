@@ -3,6 +3,7 @@
 - [介绍](#介绍)
   - [如果仅用其中一个厂商，是否也需要配置所有证书](#如果仅用其中一个厂商是否也需要配置所有证书)
   - [Direct local .aar file dependencies are not supported when building an AAR.](#direct-local-aar-file-dependencies-are-not-supported-when-building-an-aar)
+  - [在华为手机中，无法使用 fcm 推送。](#在华为手机中无法使用-fcm-推送)
 
 # 介绍
 
@@ -13,3 +14,7 @@
 ## Direct local .aar file dependencies are not supported when building an AAR.
 
 答：https://github.com/facebook/react-native/issues/33062
+
+## 在华为手机中，无法使用 fcm 推送。
+
+答：如果华为手机没有安装谷歌套件，那么确实无法使用 fcm 推送接收离线消息。日志提示 `Google Play services missing or without correct permission.`
