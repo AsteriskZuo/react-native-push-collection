@@ -18,3 +18,5 @@ Answer: Yes, currently it is necessary. If you find it troublesome, you can use 
 ## Unable to use FCM push notifications on Huawei phones.
 
 Answer: If the Huawei phone does not have Google services installed, it will indeed be unable to use FCM push notifications to receive offline messages. The log indicates `Google Play services missing or without correct permission.`
+
+Similarly, other domestic phones, if they do not have Google services installed, will also be unable to retrieve the token. The error message will be similar: `Topic sync or token retrieval failed on hard failure exceptions: java.util.concurrent.ExecutionException: java.io.IOException: SERVICE_NOT_AVAILABLE. Won't retry the operation.`

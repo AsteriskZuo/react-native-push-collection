@@ -18,3 +18,5 @@
 ## 在华为手机中，无法使用 fcm 推送。
 
 答：如果华为手机没有安装谷歌套件，那么确实无法使用 fcm 推送接收离线消息。日志提示 `Google Play services missing or without correct permission.`
+
+类似的，其它国产手机，如果没有安装谷歌套件，那么也无法获取 token。报错信息类似：`Topic sync or token retrieval failed on hard failure exceptions: java.util.concurrent.ExecutionException: java.io.IOException: SERVICE_NOT_AVAILABLE. Won't retry the operation.`
