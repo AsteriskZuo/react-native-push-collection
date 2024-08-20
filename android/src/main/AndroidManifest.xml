@@ -55,14 +55,17 @@
     </service>
     <meta-data
       android:name="firebase_messaging_auto_init_enabled"
-      android:value="false" />
+      android:value="false"
+      tools:replace="android:value"/>
     <meta-data
       android:name="firebase_analytics_collection_enabled"
-      android:value="false" />
+      android:value="false"
+      tools:replace="android:value"/>
     <!--fcm version-->
     <meta-data
       android:name="sdk_version_fcm"
-      android:value="24.0.0" />
+      android:value="24.0.0"
+      tools:replace="android:value"/>
 
     <!--honor service config-->
     <service
@@ -75,11 +78,13 @@
     <!--honor params-->
     <meta-data
       android:name="com.hihonor.push.app_id"
-      android:value="${HONOR_PUSH_APPID}" />
+      android:value="${HONOR_PUSH_APPID}"
+      tools:replace="android:value"/>
     <!--honor version-->
     <meta-data
       android:name="sdk_version_honor"
-      android:value="7.0.61.303" />
+      android:value="7.0.61.303"
+      tools:replace="android:value"/>
 
     <!--huawei service config-->
     <service
@@ -91,11 +96,13 @@
     </service>
     <meta-data
       android:name="push_kit_auto_init_enabled"
-      android:value="false"/>
+      android:value="false"
+      tools:replace="android:value"/>
     <!--huawei params-->
     <meta-data
       android:name="sdk_version_huawei"
-      android:value="6.12.0.300" />
+      android:value="6.12.0.300"
+      tools:replace="android:value"/>
 
     <!--meizu service config-->
     <receiver
@@ -119,7 +126,8 @@
     <!--meizu version-->
     <meta-data
       android:name="sdk_version_meizu"
-      android:value="4.3.0" />
+      android:value="4.3.0"
+      tools:replace="android:value"/>
 
     <!--oppo service config-->
     <service
@@ -143,7 +151,8 @@
     <!--oppo verison-->
     <meta-data
       android:name="sdk_version_oppo"
-      android:value="3.5.2" />
+      android:value="3.5.2"
+      tools:replace="android:value"/>
 
     <!--vivo service config-->
     <service
@@ -162,14 +171,17 @@
     <!--vivo params-->
     <meta-data
       android:name="com.vivo.push.api_key"
-      android:value="${VIVO_PUSH_APPKEY}" />
+      android:value="${VIVO_PUSH_APPKEY}"
+      tools:replace="android:value"/>
     <meta-data
       android:name="com.vivo.push.app_id"
-      android:value="${VIVO_PUSH_APPID}" />
+      android:value="${VIVO_PUSH_APPID}"
+      tools:replace="android:value"/>
     <!--vivo version-->
     <meta-data
       android:name="sdk_version_vivo"
-      android:value="504" />
+      android:value="504"
+      tools:replace="android:value"/>
 
     <!--xiaomi service config-->
     <receiver
@@ -188,7 +200,8 @@
     <!--xiaomi version-->
     <meta-data
       android:name="sdk_version_xiaomi"
-      android:value="6.0.1" />
+      android:value="6.0.1"
+      tools:replace="android:value"/>
   </application>
 
 </manifest>
