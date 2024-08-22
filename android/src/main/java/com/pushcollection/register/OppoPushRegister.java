@@ -7,6 +7,7 @@ import com.pushcollection.BasicPushRegister;
 import com.pushcollection.PushClient;
 import com.pushcollection.PushError;
 import com.pushcollection.PushErrorCode;
+import com.pushcollection.PushNotification;
 import com.pushcollection.config.OppoPushConfig;
 import org.json.JSONObject;
 
@@ -20,8 +21,13 @@ public class OppoPushRegister extends BasicPushRegister {
       callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Oppo init is failed."));
       return;
     }
-    HeytapPushManager.init(client.getApplicationContext(), true);
-    callback.invoke();
+    try {
+      HeytapPushManager.init(client.getApplicationContext(), true);
+      PushNotification.createChannel(client);
+      callback.invoke();
+    } catch (Exception e) {
+      callback.invoke(new PushError(PushErrorCode.INIT_ERROR, "Oppo init is failed." + e.getMessage()));
+    }
   }
 
   @Override

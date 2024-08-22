@@ -78,6 +78,8 @@ android {
     buildConfigField("String", "FCM_SENDERID", "\"${properties.getProperty("FCM_SENDERID")}\"")
     buildConfigField("String", "HONOR_PUSH_APPID", "\"${properties.getProperty("HONOR_PUSH_APPID")}\"")
     buildConfigField("String", "HUAWEI_PUSH_APPID", "\"${properties.getProperty("HUAWEI_PUSH_APPID")}\"")
+    buildConfigField("String", "OPPO_CHANNEL_ID", "\"${properties.getProperty("OPPO_CHANNEL_ID")}\"")
+    buildConfigField("String", "OPPO_CHANNEL_NAME", "\"${properties.getProperty("OPPO_CHANNEL_NAME")}\"")
 
     // replece placeholder with default value
     addManifestPlaceholders([
@@ -92,6 +94,8 @@ android {
       FCM_SENDERID: "${properties.getProperty("FCM_SENDERID")}",
       HONOR_PUSH_APPID: "${properties.getProperty("HONOR_PUSH_APPID")}",
       HUAWEI_PUSH_APPID: "${properties.getProperty("HUAWEI_PUSH_APPID")}",
+      OPPO_CHANNEL_ID: "${properties.getProperty("OPPO_CHANNEL_ID")}",
+      OPPO_CHANNEL_NAME: "${properties.getProperty("OPPO_CHANNEL_NAME")}",
     ])
   }
   buildTypes {
