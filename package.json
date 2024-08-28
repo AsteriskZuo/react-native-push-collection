@@ -1,6 +1,6 @@
 {
   "name": "react-native-push-collection",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "push collection",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
