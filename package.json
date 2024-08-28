@@ -39,7 +39,17 @@
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
     "sdk-version": "node scripts/generate-version.js",
-    "sdk-api": "bob build"
+    "sdk-api": "bob build",
+    "npm:publish:before": "cp -f template/readme.md.template README.md",
+    "npm:publish:after": "git checkout README.md",
+    "npm:publish:beta": "npm publish --tag beta",
+    "npm:publish:alpha": "npm publish --tag alpha",
+    "npm:publish:rc": "npm publish --tag rc",
+    "npm:publish": "npm publish",
+    "npa": "yarn run npm:publish:before && yarn run npm:publish:alpha && yarn run npm:publish:after",
+    "npb": "yarn run npm:publish:before && yarn run npm:publish:beta && yarn run npm:publish:after",
+    "npc": "yarn run npm:publish:before && yarn run npm:publish:rc && yarn run npm:publish:after",
+    "np": "yarn run npm:publish:before && yarn run npm:publish && yarn run npm:publish:after"
   },
   "keywords": [
     "react-native",
