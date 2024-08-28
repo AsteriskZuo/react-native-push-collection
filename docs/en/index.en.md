@@ -370,7 +370,7 @@ export default function App() {
 }
 ```
 
-[full code source](https://github.com/AsteriskZuo/react-native-push-collection/blob/main/example/src/App.tsx)
+[full code source](https://github.com/easemob/react-native-push-collection/blob/main/example/src/App.tsx)
 
 ## Notes
 

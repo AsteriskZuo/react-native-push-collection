@@ -366,7 +366,7 @@ export default function App() {
 }
 ```
 
-[完整源码地址](https://github.com/AsteriskZuo/react-native-push-collection/blob/main/example/src/App.tsx)
+[完整源码地址](https://github.com/easemob/react-native-push-collection/blob/main/example/src/App.tsx)
 
 ## 注意事项
 

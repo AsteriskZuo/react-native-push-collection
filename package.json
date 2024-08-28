@@ -44,13 +44,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/AsteriskZuo/react-native-push-collection",
+  "repository": "https://github.com/easemob/react-native-push-collection",
   "author": "asteriskzuo <zuoyuhsywn@hotmail.com> (https://github.com/AsteriskZuo)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AsteriskZuo/react-native-push-collection/issues"
+    "url": "https://github.com/easemob/react-native-push-collection/issues"
   },
-  "homepage": "https://github.com/AsteriskZuo/react-native-push-collection#readme",
+  "homepage": "https://github.com/easemob/react-native-push-collection#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
