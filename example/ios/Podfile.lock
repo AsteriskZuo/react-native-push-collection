@@ -380,7 +380,7 @@ PODS:
   - React-jsinspector (0.71.11)
   - React-logger (0.71.11):
     - glog
-  - react-native-push-collection (1.0.0-alpha.0):
+  - react-native-push-collection (1.0.0-alpha.2):
     - FirebaseAuth (>= 10.0.0)
     - FirebaseCore (>= 10.0.0)
     - FirebaseMessaging (>= 10.0.0)
@@ -682,7 +682,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 089cd07c76ecf498960a64ba8ae0f2dddd382f44
   React-jsinspector: b6ed4cb3ffa27a041cd440300503dc512b761450
   React-logger: 186dd536128ae5924bc38ed70932c00aa740cd5b
-  react-native-push-collection: a8f1319692d55b24cc79b0b4706e74900b62e70f
+  react-native-push-collection: a2c1873d4434608c2527a781d80414b59d557422
   React-perflogger: e706562ab7eb8eb590aa83a224d26fa13963d7f2
   React-RCTActionSheet: 57d4bd98122f557479a3359ad5dad8e109e20c5a
   React-RCTAnimation: ccf3ef00101ea74bda73a045d79a658b36728a60
@@ -703,4 +703,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: c5746b786ae7e223ef84205e97cf6df4771ab4bd
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.15.2
