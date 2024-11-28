@@ -21,7 +21,7 @@ export default function App() {
     const platform = getPlatform();
     let pushType: PushType;
     if (platform === 'ios') {
-      pushType = 'fcm';
+      pushType = 'apns';
     } else {
       pushType = (getDeviceType() ?? 'unknown') as PushType;
     }
