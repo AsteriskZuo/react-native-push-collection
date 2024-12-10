@@ -53,6 +53,12 @@ npx react-native@latest init --version 0.73.2 PushProjectDemo
 yarn add react-native-push-collection
 ```
 
+初始化项目
+
+```sh
+yarn
+```
+
 **注意** 假设 创建的项目名为 `PushProjectDemo`
 
 ### ios 平台设置

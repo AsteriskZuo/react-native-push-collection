@@ -55,6 +55,12 @@ Add dependencies
 yarn add react-native-push-collection
 ```
 
+Initialization a project
+
+```sh
+yarn
+```
+
 **Note** Assume that the created project is named `PushProjectDemo`
 
 ### ios platform
