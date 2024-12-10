@@ -11,12 +11,13 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.module.annotations.ReactModule;
 import java.util.HashMap;
 
-@ReactModule(name = PushCollectionModule.NAME)
-public class PushCollectionModule extends ReactContextBaseJavaModule {
+public class PushCollectionModule extends PushCollectionSpec {
   public static final String NAME = "PushCollection";
   private static final String TAG = "PushCollectionModule";
 
-  public PushCollectionModule(ReactApplicationContext reactContext) { super(reactContext); }
+  PushCollectionModule(ReactApplicationContext context) {
+    super(context);
+  }
 
   @Override
   public void initialize() {
@@ -29,6 +30,7 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
   public String getName() {
     return NAME;
   }
+
 
   // Example method
   // See https://reactnative.dev/docs/native-modules-android
@@ -71,7 +73,7 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void prepare(ReadableMap params, Promise promise) throws Exception {
+  public void prepare(ReadableMap params, Promise promise) {
     PushClient.getInstance().prepare(new Callback() {
       @Override
       public void invoke(Object... objects) {
@@ -85,7 +87,7 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void registerPush(ReadableMap params, Promise promise) throws Exception {
+  public void registerPush(ReadableMap params, Promise promise) {
     PushClient.getInstance().registerPush(objects -> {
       if (objects.length > 0) {
         if (objects[0] instanceof PushError) {
@@ -140,6 +142,16 @@ public class PushCollectionModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void addListener(String methodType) {
+    // Keep: Required for RN built in Event Emitter Calls.
+  }
+
+  @ReactMethod
+  public void removeListeners(double count) {
+    // Keep: Required for RN built in Event Emitter Calls.
+  }
+
+  @ReactMethod
+  public void removeAllListeners() {
     // Keep: Required for RN built in Event Emitter Calls.
   }
 

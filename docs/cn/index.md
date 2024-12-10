@@ -129,6 +129,7 @@ end
 ```
 
 **下面的代码实现可选，如果没有实现，则内部有默认调用。**
+**react-native 0.70 版本以下需要手动实现**
 
 在 `AppDelegate` 的 `- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken` 中添加代码
 
@@ -336,7 +337,7 @@ export default function App() {
   const onGetTokenAsync = () => {
     // todo: 3. get token with `onReceivePushToken`
     ChatPushClient.getInstance()
-      .getTokenAsync()
+      .getTokenFlow()
       .then(() => {
         ToastAndroid.show('get token success', ToastAndroid.SHORT);
       })

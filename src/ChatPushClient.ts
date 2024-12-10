@@ -1,8 +1,5 @@
 import type { EmitterSubscription } from 'react-native';
-import {
-  PushCollection,
-  PushCollectionEventEmitter,
-} from './__internal__/native';
+import { PushCollection, eventEmitter } from './__internal__/native';
 import type { PushConfig } from './ChatPushConfig';
 import type { ChatPushListener } from './ChatPushListener';
 import {
@@ -77,9 +74,8 @@ export class ChatPushClient {
     this._nativeSubs.clear();
     this._nativeSubs.set(
       _onNativeNotification,
-      PushCollectionEventEmitter.addListener(
-        _onNativeNotification,
-        (params: any) => this._onNativeNotification(params)
+      eventEmitter.addListener(_onNativeNotification, (params: any) =>
+        this._onNativeNotification(params)
       )
     );
     return tryCatch(
@@ -165,7 +161,7 @@ export class ChatPushClient {
    *
    * @throws {@link ChatPushError}
    */
-  public getTokenAsync(): Promise<void> {
+  public getTokenFlow(): Promise<void> {
     return tryCatch(PushCollection.getTokenFlow({}));
   }
 }

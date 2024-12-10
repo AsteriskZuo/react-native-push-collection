@@ -7,7 +7,9 @@
 #import "ThreadUtil.h"
 #import "ToMapUtil.h"
 
-#import "RCTAppDelegate.h"
+#if RN_VERSION_MINOR >= 70 && RN_VERSION_MAJOR == 0
+#import <React-RCTAppDelegate/RCTAppDelegate.h>
+#endif
 
 static NSString *const TAG = @"PushCollection";
 
@@ -24,19 +26,19 @@ RCT_EXPORT_MODULE()
 
 // Example method
 // See // https://reactnative.dev/docs/native-modules-ios
-RCT_REMAP_METHOD(multiply, multiplyWithA
-                 : (double)a withB
-                 : (double)b withResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
-                 : (RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(multiply:(double)a
+                  b:(double)b
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
     NSNumber *result = @(a * b);
 
     resolve(result);
 }
 
-RCT_REMAP_METHOD(init, init
-                 : (NSDictionary *)params withResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
+RCT_EXPORT_METHOD(init
+                 : (NSDictionary *)params resolve
+                 : (RCTPromiseResolveBlock)resolve reject
                  : (RCTPromiseRejectBlock)reject) {
     NSString *platform = params[@"platform"];
     NSString *pushType = params[@"pushType"];
@@ -64,49 +66,49 @@ RCT_REMAP_METHOD(init, init
     }];
 }
 
-RCT_REMAP_METHOD(prepare, prepare
-                 : (NSDictionary *)params withResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
+RCT_EXPORT_METHOD(prepare
+                 : (NSDictionary *)params resolve
+                 : (RCTPromiseResolveBlock)resolve reject
                  : (RCTPromiseRejectBlock)reject) {
     [ThreadUtil asyncExecute:^{
       [[PushClient sharedInstance] prepare:resolve withRejecter:reject];
     }];
 }
 
-RCT_REMAP_METHOD(registerPush, registerPush
-                 : (NSDictionary *)params withResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
+RCT_EXPORT_METHOD(registerPush
+                 : (NSDictionary *)params resolve
+                 : (RCTPromiseResolveBlock)resolve reject
                  : (RCTPromiseRejectBlock)reject) {
     [ThreadUtil asyncExecute:^{
       [[PushClient sharedInstance] registerPush:resolve withRejecter:reject];
     }];
 }
 
-RCT_REMAP_METHOD(unregisterPush, unregisterPushWithResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
+RCT_EXPORT_METHOD(unregisterPush
+                 : (RCTPromiseResolveBlock)resolve reject
                  : (RCTPromiseRejectBlock)reject) {
     [ThreadUtil asyncExecute:^{
       [[PushClient sharedInstance] unregisterPush:resolve withRejecter:reject];
     }];
 }
 
-RCT_REMAP_METHOD(getPushConfig, getPushConfigWithResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
+RCT_EXPORT_METHOD(getPushConfig
+                 : (RCTPromiseResolveBlock)resolve reject
                  : (RCTPromiseRejectBlock)reject) {
     NSDictionary *ret = [ToMapUtil toMap:[[PushClient sharedInstance] getPushConfig]];
     [ReturnUtil success:resolve withData:ret];
 }
 
-RCT_REMAP_METHOD(getToken, getTokenWithResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
+RCT_EXPORT_METHOD(getToken
+                 : (RCTPromiseResolveBlock)resolve reject
                  : (RCTPromiseRejectBlock)reject) {
     NSString *ret = [[PushClient sharedInstance] getDeviceToken];
     [ReturnUtil success:resolve withData:ret];
 }
 
-RCT_REMAP_METHOD(getTokenFlow, getTokenFlow
-                 : (NSDictionary *)params withResolver
-                 : (RCTPromiseResolveBlock)resolve withRejecter
+RCT_EXPORT_METHOD(getTokenFlow
+                 : (NSDictionary *)params resolve
+                 : (RCTPromiseResolveBlock)resolve reject
                  : (RCTPromiseRejectBlock)reject) {
     [ThreadUtil asyncExecute:^{
       [[PushClient sharedInstance] getTokenFlow:resolve withRejecter:reject];
@@ -116,7 +118,8 @@ RCT_REMAP_METHOD(getTokenFlow, getTokenFlow
 // Don't compile this code when we build for the old architecture.
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params {
+    (const facebook::react::ObjCTurboModule::InitParams &)params
+{
     return std::make_shared<facebook::react::NativePushCollectionSpecJSI>(params);
 }
 #endif
@@ -127,6 +130,12 @@ RCT_REMAP_METHOD(getTokenFlow, getTokenFlow
 - (void)removeListeners:(double)count {
     [super removeListeners:count];
 }
+
+- (void)removeAllListeners {
+
+}
+
+
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[ onNativeNotification ];
@@ -141,6 +150,8 @@ RCT_REMAP_METHOD(getTokenFlow, getTokenFlow
 
 @end
 
+
+#if RN_VERSION_MINOR >= 70 && RN_VERSION_MAJOR == 0
 @implementation RCTAppDelegate (Push)
 
 // !!! Do not implement it, otherwise the program will fail.
@@ -163,3 +174,6 @@ RCT_REMAP_METHOD(getTokenFlow, getTokenFlow
 }
 
 @end
+#endif
+
+

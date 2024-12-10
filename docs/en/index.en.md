@@ -133,6 +133,7 @@ In the `- (BOOL)application:(UIApplication *)application didFinishLaunchingWithO
 ```
 
 **The following code implementation is optional, if not implemented, there is a default call internally.**
+**Manual implementation is required for react-native versions below 0.70**
 
 In the `- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken` method of `AppDelegate`, add the code:
 
@@ -340,7 +341,7 @@ export default function App() {
   const onGetTokenAsync = () => {
     // todo: 3. get token with `onReceivePushToken`
     ChatPushClient.getInstance()
-      .getTokenAsync()
+      .getTokenFlow()
       .then(() => {
         ToastAndroid.show('get token success', ToastAndroid.SHORT);
       })

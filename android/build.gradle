@@ -7,7 +7,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.3.1"
+    classpath "com.android.tools.build:gradle:7.4.2"
     classpath("com.facebook.react:react-native-gradle-plugin")
 
     // fcm config
@@ -46,6 +46,15 @@ def getExtOrIntegerDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["PushCollection_" + name]).toInteger()
 }
 
+def supportsNamespace() {
+  def parsed = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
+  def major = parsed[0].toInteger()
+  def minor = parsed[1].toInteger()
+
+  // Namespace support was added in 7.3.0
+  return (major == 7 && minor >= 3) || major >= 8
+}
+
 def properties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -55,13 +64,22 @@ if (localPropertiesFile.exists()) {
 }
 
 android {
+  if (supportsNamespace()) {
+    namespace "com.pushcollection"
+
+    sourceSets {
+      main {
+        manifest.srcFile "src/main/AndroidManifestNew.xml"
+      }
+    }
+  }
+
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-
 
     println "MEIZU_PUSH_APPKEY: ${properties.getProperty("MEIZU_PUSH_APPKEY")}"
 //    println "App ID:" ${project.android.defaultConfig.applicationId}
@@ -98,6 +116,11 @@ android {
       OPPO_CHANNEL_NAME: "${properties.getProperty("OPPO_CHANNEL_NAME")}",
     ])
   }
+
+  buildFeatures {
+    buildConfig true
+  }
+
   buildTypes {
     release {
       minifyEnabled false
@@ -113,6 +136,19 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
+  sourceSets {
+    main {
+      if (isNewArchitectureEnabled()) {
+        java.srcDirs += [
+          "src/newarch",
+          // This is needed to build Kotlin project with NewArch enabled
+          "${project.buildDir}/generated/source/codegen/java"
+        ]
+      } else {
+        java.srcDirs += ["src/oldarch"]
+      }
+    }
+  }
 }
 
 repositories {
@@ -121,6 +157,7 @@ repositories {
   maven { url 'https://developer.hihonor.com/repo' }
   maven { url 'https://developer.huawei.com/repo/' }
 }
+
 
 dependencies {
   // For < 0.71, this will be from the local maven repo

@@ -21,7 +21,7 @@ export default function App() {
     const platform = getPlatform();
     let pushType: PushType;
     if (platform === 'ios') {
-      pushType = 'apns';
+      pushType = 'fcm';
     } else {
       pushType = (getDeviceType() ?? 'unknown') as PushType;
     }
@@ -137,7 +137,7 @@ export default function App() {
   const onGetTokenAsync = () => {
     console.log('test:zuoyu:click:onGetTokenAsync');
     ChatPushClient.getInstance()
-      .getTokenAsync()
+      .getTokenFlow()
       .then(() => {
         console.log('test:zuoyu:click:onGetTokenAsync:success');
         ToastAndroid.show('get token success', ToastAndroid.SHORT);

@@ -8,7 +8,7 @@ export interface ChatPushListener {
    * Callback for when a push token is received.
    *
    * You will receive this notification when the token is updated.
-   * You will receive this notification when {@link ChatPushClient.getTokenAsync} is called.
+   * You will receive this notification when {@link ChatPushClient.getTokenFlow} is called.
    * You may receive this notification when {@link ChatPushClient.registerPush} is called.
    *
    * @param token The push token.

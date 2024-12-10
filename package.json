@@ -1,10 +1,10 @@
 {
   "name": "react-native-push-collection",
   "version": "1.0.0",
-  "description": "push collection",
+  "description": "Get vendor push token.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
-  "types": "lib/typescript/index.d.ts",
+  "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
   "readme": "docs/cn/index.md",
@@ -30,28 +30,22 @@
     "!**/.*"
   ],
   "scripts": {
+    "example": "yarn workspace PushCollectionExample",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepack": "yarn run sdk-version && yarn run sdk-api",
-    "release": "release-it",
-    "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn install && yarn example pods",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
-    "sdk-version": "node scripts/generate-version.js",
-    "sdk-api": "bob build",
-    "npm:publish:before": "cp -f docs/cn/index.md README.zh.md && cp -f docs/en/index.en.md README.md",
-    "npm:publish:after": "git checkout README.md README.zh.md",
-    "npm:publish:beta": "npm publish --tag beta",
-    "npm:publish:alpha": "npm publish --tag alpha",
-    "npm:publish:rc": "npm publish --tag rc",
-    "npm:publish": "npm publish",
-    "local:publish": "npm pack",
-    "npa": "yarn run npm:publish:before && yarn run npm:publish:alpha && yarn run npm:publish:after",
-    "npb": "yarn run npm:publish:before && yarn run npm:publish:beta && yarn run npm:publish:after",
-    "npc": "yarn run npm:publish:before && yarn run npm:publish:rc && yarn run npm:publish:after",
-    "np": "yarn run npm:publish:before && yarn run npm:publish && yarn run npm:publish:after",
-    "lp": "yarn run npm:publish:before && npm pack && yarn run npm:publish:after"
+    "lint": "yarn run lint:sdk && yarn run lint:example",
+    "lint:sdk": "eslint \"src/**/*.{js,ts,tsx}\"",
+    "lint:example": "eslint \"example/src/**/*.{js,ts,tsx}\"",
+    "clean": "yarn run clean:generated && yarn run clean:node_modules",
+    "clean:generated": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "clean:node_modules": "rm -rf example/node_modules && rm -rf node_modules/",
+    "prepare": "yarn run gen:version_file && yarn run gen:env_file && yarn run build:exports",
+    "gen:env_file": "cd scripts && node generate-env.js",
+    "gen:version_file": "cd scripts && node generate-version.js",
+    "gen:xcode:env": "echo export NODE_BINARY=$(command -v node) > example/ios/.xcode.env.local",
+    "build:exports": "bob build",
+    "yarn_pack": "mkdir build && yarn run prepare && yarn pack --out build/react-native-push-collection.tgz",
+    "release": "release-it"
   },
   "keywords": [
     "react-native",
@@ -70,8 +64,8 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
-    "@evilmartians/lefthook": "^1.2.2",
-    "@react-native-community/eslint-config": "^3.0.2",
+    "@evilmartians/lefthook": "^1.5.0",
+    "@react-native/eslint-config": "^0.72.2",
     "@release-it/conventional-changelog": "^5.0.0",
     "@types/jest": "^28.1.2",
     "@types/react": "~17.0.21",
@@ -85,9 +79,10 @@
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
     "react": "18.2.0",
-    "react-native": "0.71.11",
+    "react-native": "0.72.17",
     "react-native-builder-bob": "^0.20.0",
     "release-it": "^15.0.0",
+    "turbo": "^1.10.7",
     "typescript": "^5.0.2"
   },
   "resolutions": {
@@ -97,10 +92,13 @@
     "react": "*",
     "react-native": "*"
   },
+  "workspaces": [
+    "example"
+  ],
+  "packageManager": "yarn@3.6.1",
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 16.16.1"
   },
-  "packageManager": "yarn@1.22.19",
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
@@ -133,7 +131,7 @@
   "eslintConfig": {
     "root": true,
     "extends": [
-      "@react-native-community",
+      "@react-native",
       "prettier"
     ],
     "rules": {
@@ -173,5 +171,13 @@
         }
       ]
     ]
+  },
+  "codegenConfig": {
+    "name": "RNPushCollectionSpec",
+    "type": "modules",
+    "jsSrcsDir": "src/__specs__",
+    "android": {
+      "javaPackageName": "com.pushcollection"
+    }
   }
 }

@@ -2,11 +2,9 @@ pre-commit:
   parallel: true
   commands:
     lint:
-      files: git diff --name-only @{push}
       glob: "*.{js,ts,jsx,tsx}"
-      run: npx eslint {files}
+      run: npx eslint {staged_files}
     types:
-      files: git diff --name-only @{push}
       glob: "*.{js,ts, jsx, tsx}"
       run: npx tsc --noEmit
 commit-msg:
@@ -14,3 +12,8 @@ commit-msg:
   commands:
     commitlint:
       run: npx commitlint --edit
+post-commit:
+  parallel: true
+  commands:
+    gitleaks:
+      run: gitleaks detect -c '.gitleaksconfig.toml' -s . -r gitleaks.log
