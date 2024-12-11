@@ -115,6 +115,9 @@ target 'PushProjectDemo' do
 end
 ```
 
+Run the `pod install` command.
+**It will generate an Xcode workspace project.**
+
 ![1](../res/fcm-add-file-to-project.png)
 ![2](../res/fcm-add-push-option.png)
 

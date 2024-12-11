@@ -113,6 +113,9 @@ target 'PushProjectDemo' do
 end
 ```
 
+执行 `pod install` 命令。
+**他会生成xcode workspace 工程。**
+
 ![1](../res/fcm-add-file-to-project.png)
 ![2](../res/fcm-add-push-option.png)
 
