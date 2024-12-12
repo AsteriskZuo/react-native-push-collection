@@ -21,6 +21,7 @@
       - [Configure the project](#configure-the-project-1)
       - [Write native code (android)](#write-native-code-android)
     - [write quick start code (typescript)](#write-quick-start-code-typescript)
+    - [Running Debug Service](#running-debug-service)
   - [Notes](#notes)
   - [Add manufacturers](#add-manufacturers)
   - [FAQ](#faq)
@@ -381,6 +382,14 @@ export default function App() {
 ```
 
 [full code source](https://github.com/easemob/react-native-push-collection/blob/main/example/src/App.tsx)
+
+### Running Debug Service
+
+You may need to run the debug service:
+
+```sh
+yarn run start
+```
 
 ## Notes
 

@@ -21,6 +21,7 @@
       - [配置工程](#配置工程-1)
       - [编写原生部分代码(android)](#编写原生部分代码android)
     - [编写快速开始代码](#编写快速开始代码)
+    - [运行调试服务](#运行调试服务)
   - [注意事项](#注意事项)
   - [添加厂商](#添加厂商)
   - [常见问题](#常见问题)
@@ -114,7 +115,7 @@ end
 ```
 
 执行 `pod install` 命令。
-**他会生成xcode workspace 工程。**
+**他会生成 xcode workspace 工程。**
 
 ![1](../res/fcm-add-file-to-project.png)
 ![2](../res/fcm-add-push-option.png)
@@ -377,6 +378,14 @@ export default function App() {
 ```
 
 [完整源码地址](https://github.com/easemob/react-native-push-collection/blob/main/example/src/App.tsx)
+
+### 运行调试服务
+
+可能需要运行调试服务：
+
+```sh
+yarn run start
+```
 
 ## 注意事项
 
